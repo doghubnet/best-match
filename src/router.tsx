@@ -24,6 +24,7 @@ import Tasks from "@/pages/app/Tasks";
 import Settings from "@/pages/app/Settings";
 import Admin from "@/pages/app/Admin";
 import NotFound from "@/pages/NotFound";
+import ReportBug from "@/pages/report-bug";
 
 export default function AppRouter() {
   return (
@@ -37,6 +38,7 @@ export default function AppRouter() {
         <Route path="reset-password" element={<ResetPassword />} />
         <Route path="privacy" element={<Privacy />} />
         <Route path="terms" element={<Terms />} />
+        <Route path="report-bug" element={<ReportBug />} />
       </Route>
 
       <Route
