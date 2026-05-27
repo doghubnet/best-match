@@ -1,16 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import { AuthProvider } from './lib/auth'
-import { AppRouter } from './router'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "sonner";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import AppRouter from "./router";
+import "./index.css";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Missing root element. index.html must include <div id=\"root\"></div>.");
+}
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <AuthProvider>
+    <ErrorBoundary>
       <BrowserRouter>
         <AppRouter />
+        <Toaster richColors position="top-right" />
       </BrowserRouter>
-    </AuthProvider>
-  </React.StrictMode>,
-)
+    </ErrorBoundary>
+  </React.StrictMode>
+);
