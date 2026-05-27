@@ -1,12 +1,16 @@
 project_id = "brovi-scan"
 
 [functions.analyze-program-match]
-verify_jwt = false
+verify_jwt = true
+
 [functions.analyze-document-scan]
-verify_jwt = false
+verify_jwt = true
+
 [functions.analyze-bank-statement]
-verify_jwt = false
+verify_jwt = true
+
 [functions.analyze-interview-answer]
-verify_jwt = false
+verify_jwt = true
+
 [functions.generate-readiness-report]
-verify_jwt = false
+verify_jwt = true
