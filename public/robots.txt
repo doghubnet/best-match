@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://brovi-scan.vercel.app/sitemap.xml

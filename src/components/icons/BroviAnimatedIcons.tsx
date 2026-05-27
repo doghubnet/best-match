@@ -1,14 +1,17 @@
-import { Search, CheckSquare, Download, Mic, Info, Infinity, Calendar, Star, Bell, Folder, Loader2 } from 'lucide-react'
-const wrap = (C: any) => () => <C className='h-5 w-5 text-cyan-300' />
-export const ExploreIcon = wrap(Search)
-export const CheckBoxIcon = wrap(CheckSquare)
-export const DownloadWaveIcon = wrap(Download)
-export const MicrophoneIcon = wrap(Mic)
-export const InfoIcon = wrap(Info)
-export const InfinityIcon = wrap(Infinity)
-export const CalendarIcon = wrap(Calendar)
-export const StarIcon = wrap(Star)
-export const NotificationIcon = wrap(Bell)
-export const FolderIcon = wrap(Folder)
-export const LoadingSpinnerIcon = () => <Loader2 className='h-5 w-5 animate-spin text-cyan-300' />
-export const pricingIcons = { ExploreIcon, CheckBoxIcon, DownloadWaveIcon, MicrophoneIcon, InfoIcon, InfinityIcon, CalendarIcon, StarIcon, NotificationIcon, FolderIcon, LoadingSpinnerIcon }
+import type { SVGProps } from "react";
+import { cn } from "@/lib/utils";
+
+type IconProps = SVGProps<SVGSVGElement> & { title?: string };
+function SvgBase({ className, children, title, ...props }: IconProps) { return <svg viewBox="0 0 64 64" role={title ? "img" : "presentation"} aria-label={title} className={cn("h-10 w-10 text-indigo-300", className)} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>{title ? <title>{title}</title> : null}<defs><linearGradient id="broviIconGradient" x1="8" y1="8" x2="56" y2="56"><stop stopColor="#38bdf8" /><stop offset="0.5" stopColor="#818cf8" /><stop offset="1" stopColor="#c084fc" /></linearGradient></defs>{children}</svg> }
+export function ExploreIcon(props: IconProps){return <SvgBase {...props}><circle cx="32" cy="32" r="23" stroke="url(#broviIconGradient)" strokeWidth="4"/><path d="M39 20 34.5 34.5 20 39l4.5-14.5L39 20Z" fill="url(#broviIconGradient)" className="origin-center animate-pulse"/><circle cx="32" cy="32" r="3" fill="white"/></SvgBase>}
+export function CheckBoxIcon(props: IconProps){return <SvgBase {...props}><rect x="13" y="13" width="38" height="38" rx="10" stroke="url(#broviIconGradient)" strokeWidth="4"/><path d="M22 33.5 29 40l14-17" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse"/></SvgBase>}
+export function DownloadWaveIcon(props: IconProps){return <SvgBase {...props}><path d="M32 12v27" stroke="url(#broviIconGradient)" strokeWidth="5" strokeLinecap="round"/><path d="M21 29l11 11 11-11" stroke="url(#broviIconGradient)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/><path d="M13 48c6-5 12 5 19 0s13 5 19 0" stroke="white" strokeWidth="4" strokeLinecap="round" className="animate-pulse"/></SvgBase>}
+export function MicrophoneIcon(props: IconProps){return <SvgBase {...props}><rect x="24" y="10" width="16" height="30" rx="8" stroke="url(#broviIconGradient)" strokeWidth="4"/><path d="M17 30c0 9 6 16 15 16s15-7 15-16" stroke="white" strokeWidth="4" strokeLinecap="round"/><path d="M32 46v8" stroke="url(#broviIconGradient)" strokeWidth="4" strokeLinecap="round"/><path d="M24 54h16" stroke="url(#broviIconGradient)" strokeWidth="4" strokeLinecap="round"/></SvgBase>}
+export function InfoIcon(props: IconProps){return <SvgBase {...props}><circle cx="32" cy="32" r="23" stroke="url(#broviIconGradient)" strokeWidth="4"/><path d="M32 29v15" stroke="white" strokeWidth="5" strokeLinecap="round"/><circle cx="32" cy="21" r="3" fill="white"/></SvgBase>}
+export function InfinityIcon(props: IconProps){return <SvgBase {...props}><path d="M19 39c-6 0-10-4-10-9s4-9 10-9c8 0 13 18 26 18 6 0 10-4 10-9s-4-9-10-9c-8 0-13 18-26 18Z" stroke="url(#broviIconGradient)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse"/></SvgBase>}
+export function CalendarIcon(props: IconProps){return <SvgBase {...props}><rect x="12" y="16" width="40" height="36" rx="8" stroke="url(#broviIconGradient)" strokeWidth="4"/><path d="M12 27h40" stroke="white" strokeWidth="4"/><path d="M22 10v10M42 10v10" stroke="url(#broviIconGradient)" strokeWidth="4" strokeLinecap="round"/><circle cx="24" cy="38" r="3" fill="white"/><circle cx="34" cy="38" r="3" fill="white"/><circle cx="44" cy="38" r="3" fill="white"/></SvgBase>}
+export function StarIcon(props: IconProps){return <SvgBase {...props}><path d="m32 10 6.3 13 14.3 2.1-10.3 10.1 2.4 14.2L32 42.7 19.3 49.4l2.4-14.2-10.3-10.1 14.3-2.1L32 10Z" fill="url(#broviIconGradient)" className="animate-pulse"/></SvgBase>}
+export function NotificationIcon(props: IconProps){return <SvgBase {...props}><path d="M43 28c0-8-4-14-11-14S21 20 21 28c0 12-5 13-5 17h32c0-4-5-5-5-17Z" stroke="url(#broviIconGradient)" strokeWidth="4" strokeLinejoin="round"/><path d="M27 49c1 4 9 4 10 0" stroke="white" strokeWidth="4" strokeLinecap="round"/><path d="M47 18c3 3 4 6 4 10" stroke="white" strokeWidth="3" strokeLinecap="round" className="animate-pulse"/></SvgBase>}
+export function FolderIcon(props: IconProps){return <SvgBase {...props}><path d="M10 23c0-4 3-7 7-7h10l5 6h15c4 0 7 3 7 7v16c0 4-3 7-7 7H17c-4 0-7-3-7-7V23Z" stroke="url(#broviIconGradient)" strokeWidth="4" strokeLinejoin="round"/><path d="M13 31h38" stroke="white" strokeWidth="4" strokeLinecap="round" className="animate-pulse"/></SvgBase>}
+export function LoadingSpinnerIcon(props: IconProps){return <SvgBase {...props}><circle cx="32" cy="32" r="22" stroke="currentColor" strokeWidth="4" opacity="0.2"/><path d="M54 32c0-12.2-9.8-22-22-22" stroke="url(#broviIconGradient)" strokeWidth="5" strokeLinecap="round" className="origin-center animate-spin"/></SvgBase>}
+export const pricingIcons={programMatch:ExploreIcon,checklist:CheckBoxIcon,financial:DownloadWaveIcon,interview:MicrophoneIcon,report:InfoIcon,unlimited:InfinityIcon,countryChecklist:CalendarIcon,consultant:StarIcon,support:NotificationIcon,history:FolderIcon,loading:LoadingSpinnerIcon};

@@ -1,1 +1,2 @@
-export default function Admin(){return <div className='card space-y-2'><h1 className='text-3xl'>Admin</h1><p>Manage users, review flagged scans, and monitor system usage.</p><div className='grid md:grid-cols-3 gap-2'><div className='bg-slate-800 p-3 rounded'>Users: 124</div><div className='bg-slate-800 p-3 rounded'>Pending reviews: 7</div><div className='bg-slate-800 p-3 rounded'>Errors (24h): 1</div></div></div>}
+import { useAuth } from '@/lib/auth';
+export default function Admin(){const {user}=useAuth();if(user?.role!=='admin') return <div className='card'>Admin access required.</div>; return <div className='card'><h1 className='text-3xl'>Admin Panel</h1><p>Protected metrics visible to admin role only.</p></div>}
