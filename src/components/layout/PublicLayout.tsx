@@ -1,0 +1,2 @@
+import { Link, Outlet } from 'react-router-dom'
+export default function PublicLayout(){return <div className='min-h-screen bg-slate-950 text-slate-100'><header className='border-b border-slate-800'><div className='container py-4 flex justify-between'><Link to='/' className='font-bold'>Brovi Scan</Link><nav className='flex gap-4'><Link to='/pricing'>Pricing</Link><Link to='/login'>Login</Link></nav></div></header><Outlet/></div>}

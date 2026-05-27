@@ -1,0 +1,1 @@
+export default function Tasks(){return <div className='card'><h1 className='text-3xl'>Tasks</h1><ul className='mt-3 list-disc pl-5 text-slate-300'><li>Upload passport copy</li><li>Finalize motivation letter</li><li>Confirm bank statement period</li></ul></div>}

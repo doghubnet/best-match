@@ -1,0 +1,1 @@
+export default function Settings(){return <form className='card space-y-3 max-w-xl'><h1 className='text-3xl'>Settings</h1><label className='flex items-center gap-2'><input type='checkbox'/> Email reminders</label><label className='flex items-center gap-2'><input type='checkbox'/> Weekly progress summary</label><button className='btn'>Save settings</button></form>}

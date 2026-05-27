@@ -1,43 +1,26 @@
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
-import { useAuth } from './lib/auth'
+import { Route, Routes } from 'react-router-dom'
+import PublicLayout from '@/components/layout/PublicLayout'
+import AppLayout from '@/components/layout/AppLayout'
+import ProtectedRoute from '@/components/layout/ProtectedRoute'
+import Home from '@/pages/Home'
+import Pricing from '@/pages/Pricing'
+import Login from '@/pages/auth/Login'
+import Register from '@/pages/auth/Register'
+import ForgotPassword from '@/pages/auth/ForgotPassword'
+import ResetPassword from '@/pages/auth/ResetPassword'
+import Privacy from '@/pages/legal/Privacy'
+import Terms from '@/pages/legal/Terms'
+import Dashboard from '@/pages/app/Dashboard'
+import Profile from '@/pages/app/Profile'
+import ProgramMatch from '@/pages/app/ProgramMatch'
+import DocumentScan from '@/pages/app/DocumentScan'
+import Bank from '@/pages/app/Bank'
+import Interview from '@/pages/app/Interview'
+import Report from '@/pages/app/Report'
+import Consultant from '@/pages/app/Consultant'
+import Tasks from '@/pages/app/Tasks'
+import Settings from '@/pages/app/Settings'
+import Admin from '@/pages/app/Admin'
+import NotFound from '@/pages/NotFound'
 
-const Page = ({ title }: { title: string }) => <div className="container py-10"><h1 className="text-3xl font-bold">{title}</h1></div>
-const Pricing = () => <div className="container py-10 space-y-6"><h1 className="text-3xl font-bold">Pricing</h1><div className="grid md:grid-cols-3 gap-4">{['Free','Pro','Team'].map(t=><div key={t} className="card"><h3 className="text-xl">{t}</h3><p>Plan built for {t.toLowerCase()} users.</p></div>)}</div></div>
-const ScanPage = ({ title }: { title: string }) => <div className="container py-10"><h1 className="text-3xl font-bold">{title}</h1><div className="card mt-4"><label className="block">Paste content to analyze</label><textarea className="mt-2 w-full bg-slate-800 rounded p-3 min-h-40" /></div></div>
-
-function Protected() { const { user } = useAuth(); return user ? <Outlet /> : <Navigate to="/login" replace /> }
-
-function AppLayout() { return <div><nav className="border-b border-slate-800"><div className="container py-3 flex gap-4"><a href="/app">Dashboard</a><a href="/pricing">Pricing</a></div></nav><Outlet /></div> }
-
-function Login() { const { login } = useAuth(); return <div className="container py-10"><h1 className="text-3xl font-bold">Login</h1><button className="btn mt-4" onClick={() => login('user@example.com')}>Sign in</button></div> }
-
-export function AppRouter() {
-  return (
-    <Routes>
-      <Route path='/' element={<Page title='Brovi Scan Home' />} />
-      <Route path='/pricing' element={<Pricing />} />
-      <Route path='/login' element={<Login />} />
-      <Route path='/register' element={<Page title='Register' />} />
-      <Route path='/forgot-password' element={<Page title='Forgot Password' />} />
-      <Route path='/reset-password' element={<Page title='Reset Password' />} />
-      <Route path='/privacy' element={<Page title='Privacy Policy' />} />
-      <Route path='/terms' element={<Page title='Terms of Service' />} />
-      <Route element={<Protected />}>
-        <Route path='/app' element={<AppLayout />}>
-          <Route index element={<Page title='Dashboard' />} />
-          <Route path='profile' element={<Page title='Profile' />} />
-          <Route path='program-match' element={<ScanPage title='Program Match' />} />
-          <Route path='documents' element={<ScanPage title='Document Scan' />} />
-          <Route path='bank' element={<ScanPage title='Bank Statement Analysis' />} />
-          <Route path='interview' element={<ScanPage title='Interview Analysis' />} />
-          <Route path='report' element={<Page title='Readiness Report' />} />
-          <Route path='consultant' element={<Page title='Consultant Connect' />} />
-          <Route path='tasks' element={<Page title='Tasks' />} />
-          <Route path='settings' element={<Page title='Settings' />} />
-          <Route path='admin' element={<Page title='Admin' />} />
-        </Route>
-      </Route>
-      <Route path='*' element={<Page title='404 - Page not found' />} />
-    </Routes>
-  )
-}
+export function AppRouter(){return <Routes><Route element={<PublicLayout/>}><Route path='/' element={<Home/>}/><Route path='/pricing' element={<Pricing/>}/><Route path='/login' element={<Login/>}/><Route path='/register' element={<Register/>}/><Route path='/forgot-password' element={<ForgotPassword/>}/><Route path='/reset-password' element={<ResetPassword/>}/><Route path='/privacy' element={<Privacy/>}/><Route path='/terms' element={<Terms/>}/></Route><Route element={<ProtectedRoute/>}><Route path='/app' element={<AppLayout/>}><Route index element={<Dashboard/>}/><Route path='profile' element={<Profile/>}/><Route path='program-match' element={<ProgramMatch/>}/><Route path='documents' element={<DocumentScan/>}/><Route path='bank' element={<Bank/>}/><Route path='interview' element={<Interview/>}/><Route path='report' element={<Report/>}/><Route path='consultant' element={<Consultant/>}/><Route path='tasks' element={<Tasks/>}/><Route path='settings' element={<Settings/>}/><Route path='admin' element={<Admin/>}/></Route></Route><Route path='*' element={<NotFound/>}/></Routes>}

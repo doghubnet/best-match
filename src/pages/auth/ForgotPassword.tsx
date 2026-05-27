@@ -1,0 +1,2 @@
+import { useState } from 'react';
+export default function ForgotPassword(){const [m,setM]=useState('');return <main className='container py-12'><form className='card max-w-lg space-y-3' onSubmit={e=>{e.preventDefault();setM('Reset link sent if account exists.')}}><h1 className='text-3xl'>Forgot password</h1><input className='w-full bg-slate-800 p-3 rounded' placeholder='Email'/><button className='btn'>Send reset link</button>{m&&<p>{m}</p>}</form></main>}

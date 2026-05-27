@@ -1,0 +1,1 @@
+export default function Privacy(){return <main className='container py-12 card'><h1 className='text-3xl'>Privacy</h1><p className='mt-3 text-slate-300'>We collect profile and scan data to generate readiness insights.</p></main>}

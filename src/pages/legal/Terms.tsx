@@ -1,0 +1,1 @@
+export default function Terms(){return <main className='container py-12 card'><h1 className='text-3xl'>Terms</h1><p className='mt-3 text-slate-300'>Brovi Scan is guidance software and not legal representation.</p></main>}

@@ -1,0 +1,2 @@
+import { useState } from 'react';
+export default function ResetPassword(){const [m,setM]=useState('');return <main className='container py-12'><form className='card max-w-lg space-y-3' onSubmit={e=>{e.preventDefault();setM('Password updated.')}}><h1 className='text-3xl'>Reset password</h1><input type='password' className='w-full bg-slate-800 p-3 rounded' placeholder='New password'/><input type='password' className='w-full bg-slate-800 p-3 rounded' placeholder='Confirm password'/><button className='btn'>Update password</button>{m&&<p>{m}</p>}</form></main>}
