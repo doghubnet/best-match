@@ -1,0 +1,1206 @@
+ring | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      consultant_requests: {
+        Row: {
+          admin_note: string | null
+          consent: boolean
+          contact: string | null
+          created_at: string
+          current_stage: string | null
+          email: string
+          full_name: string
+          id: string
+          main_concern: string | null
+          origin_country: string | null
+          status: string
+          support_type: string | null
+          target_country: string | null
+          user_id: string | null
+          visa_type: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          consent?: boolean
+          contact?: string | null
+          created_at?: string
+          current_stage?: string | null
+          email: string
+          full_name: string
+          id?: string
+          main_concern?: string | null
+          origin_country?: string | null
+          status?: string
+          support_type?: string | null
+          target_country?: string | null
+          user_id?: string | null
+          visa_type?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          consent?: boolean
+          contact?: string | null
+          created_at?: string
+          current_stage?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          main_concern?: string | null
+          origin_country?: string | null
+          status?: string
+          support_type?: string | null
+          target_country?: string | null
+          user_id?: string | null
+          visa_type?: string | null
+        }
+        Relationships: []
+      }
+      document_scans: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          risk: string | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          created_at: string
+          doc_type: string | null
+          id: string
+          metadata: Json | null
+          mime_type: string | null
+          name: string
+          size_bytes: number | null
+          storage_path: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          doc_type?: string | null
+          id?: string
+          metadata?: Json | null
+          mime_type?: string | null
+          name: string
+          size_bytes?: number | null
+          storage_path?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          doc_type?: string | null
+          id?: string
+          metadata?: Json | null
+          mime_type?: string | null
+          name?: string
+          size_bytes?: number | null
+          storage_path?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      interview_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          risk: string | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          accent_color: string | null
+          avatar_url: string | null
+          consultant_updates: boolean | null
+          country_of_origin: string | null
+          created_at: string
+          email: string | null
+          email_readiness_updates: boolean | null
+          full_name: string | null
+          id: string
+          origin_country: string | null
+          role: string | null
+          security_alerts: boolean | null
+          target_country: string | null
+          theme: string | null
+          travel_purpose: string | null
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          avatar_url?: string | null
+          consultant_updates?: boolean | null
+          country_of_origin?: string | null
+          created_at?: string
+          email?: string | null
+          email_readiness_updates?: boolean | null
+          full_name?: string | null
+          id: string
+          origin_country?: string | null
+          role?: string | null
+          security_alerts?: boolean | null
+          target_country?: string | null
+          theme?: string | null
+          travel_purpose?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          avatar_url?: string | null
+          consultant_updates?: boolean | null
+          country_of_origin?: string | null
+          created_at?: string
+          email?: string | null
+          email_readiness_updates?: boolean | null
+          full_name?: string | null
+          id?: string
+          origin_country?: string | null
+          role?: string | null
+          security_alerts?: boolean | null
+          target_country?: string | null
+          theme?: string | null
+          travel_purpose?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      program_match_scans: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          risk: string | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      readiness_reports: {
+        Row: {
+          created_at: string
+          id: string
+          overall_score: number | null
+          payload: Json
+          risk: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          overall_score?: number | null
+          payload?: Json
+          risk?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          overall_score?: number | null
+          payload?: Json
+          risk?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      uploaded_documents: {
+        Row: {
+          created_at: string
+          document_category: string | null
+          extracted_text: string | null
+          file_name: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          scan_status: string
+          storage_path: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_category?: string | null
+          extracted_text?: string | null
+          file_name: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          scan_status?: string
+          storage_path?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_category?: string | null
+          extracted_text?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          scan_status?: string
+          storage_path?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
+    }
+    Enums: {
+      app_role: "admin" | "moderator" | "user"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
+  },
+} as constimport { supabase } from "@/integrations/supabase/client";
+
+export type AIResponse<T = any> = {
+  ok: boolean;
+  provider?: string;
+  result?: T;
+  reply?: string;
+  error?: string;
+  message?: string;
+};
+
+export async function invokeAI<T = any>(fn: string, body: Record<string, unknown>): Promise<AIResponse<T>> {
+  try {
+    const { data, error } = await supabase.functions.invoke(fn, { body });
+    if (error) return { ok: false, error: error.message, message: "AI review is temporarily unavailable. Your form data was saved, please try again later." };
+    return data as AIResponse<T>;
+  } catch (e) {
+    return { ok: false, error: (e as Error).message, message: "AI review is temporarily unavailable. Your form data was saved, please try again later." };
+  }
+}export type ThemeMode = "system" | "light" | "dark";
+export type AccentKey = "default" | "blue" | "green" | "yellow" | "pink" | "orange" | "purple";
+
+export const ACCENTS: Record<AccentKey, { label: string; primary: string; ring: string; swatch: string }> = {
+  default: { label: "Default", primary: "oklch(0.547 0.214 264)", ring: "oklch(0.547 0.214 264)", swatch: "#2563EB" },
+  blue:    { label: "Blue",    primary: "oklch(0.58 0.20 250)",  ring: "oklch(0.58 0.20 250)",  swatch: "#3B82F6" },
+  green:   { label: "Green",   primary: "oklch(0.62 0.17 150)",  ring: "oklch(0.62 0.17 150)",  swatch: "#16A34A" },
+  yellow:  { label: "Yellow",  primary: "oklch(0.78 0.16 85)",   ring: "oklch(0.78 0.16 85)",   swatch: "#EAB308" },
+  pink:    { label: "Pink",    primary: "oklch(0.66 0.22 350)",  ring: "oklch(0.66 0.22 350)",  swatch: "#EC4899" },
+  orange:  { label: "Orange",  primary: "oklch(0.68 0.19 50)",   ring: "oklch(0.68 0.19 50)",   swatch: "#F97316" },
+  purple:  { label: "Purple",  primary: "oklch(0.58 0.22 300)",  ring: "oklch(0.58 0.22 300)",  swatch: "#8B5CF6" },
+};
+
+const THEME_KEY = "brovi.theme.mode";
+const ACCENT_KEY = "brovi.theme.accent";
+
+export function applyTheme(mode: ThemeMode) {
+  if (typeof document === "undefined") return;
+  let dark = mode === "dark";
+  if (mode === "system") {
+    dark = typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  document.documentElement.classList.toggle("dark", dark);
+}
+
+export function applyAccent(key: AccentKey) {
+  if (typeof document === "undefined") return;
+  const a = ACCENTS[key] ?? ACCENTS.default;
+  const root = document.documentElement;
+  if (key === "default") {
+    root.style.removeProperty("--primary");
+    root.style.removeProperty("--ring");
+  } else {
+    root.style.setProperty("--primary", a.primary);
+    root.style.setProperty("--ring", a.ring);
+  }
+}
+
+export function getStoredTheme(): ThemeMode {
+  if (typeof localStorage === "undefined") return "system";
+  const v = localStorage.getItem(THEME_KEY) as ThemeMode | null;
+  return v ?? "system";
+}
+export function setStoredTheme(mode: ThemeMode) {
+  if (typeof localStorage !== "undefined") localStorage.setItem(THEME_KEY, mode);
+  applyTheme(mode);
+}
+export function getStoredAccent(): AccentKey {
+  if (typeof localStorage === "undefined") return "default";
+  const v = localStorage.getItem(ACCENT_KEY) as AccentKey | null;
+  return (v && v in ACCENTS) ? v : "default";
+}
+export function setStoredAccent(key: AccentKey) {
+  if (typeof localStorage !== "undefined") localStorage.setItem(ACCENT_KEY, key);
+  applyAccent(key);
+}
+
+export function initAppearance() {
+  applyTheme(getStoredTheme());
+  applyAccent(getStoredAccent());
+}// Captures the original Error out-of-band so server.ts can recover the stack
+// when h3 has already swallowed the throw into a generic 500 Response.
+
+let lastCapturedError: { error: unknown; at: number } | undefined;
+const TTL_MS = 5_000;
+
+function record(error: unknown) {
+  lastCapturedError = { error, at: Date.now() };
+}
+
+if (typeof globalThis.addEventListener === "function") {
+  globalThis.addEventListener("error", (event) => record((event as ErrorEvent).error ?? event));
+  globalThis.addEventListener("unhandledrejection", (event) =>
+    record((event as PromiseRejectionEvent).reason),
+  );
+}
+
+export function consumeLastCapturedError(): unknown {
+  if (!lastCapturedError) return undefined;
+  if (Date.now() - lastCapturedError.at > TTL_MS) {
+    lastCapturedError = undefined;
+    return undefined;
+  }
+  const { error } = lastCapturedError;
+  lastCapturedError = undefined;
+  return error;
+}export function renderErrorPage(): string {
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>This page didn't load</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #fafafa; color: #111; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
+      .card { max-width: 28rem; width: 100%; text-align: center; padding: 2rem; }
+      h1 { font-size: 1.25rem; margin: 0 0 0.5rem; }
+      p { color: #4b5563; margin: 0 0 1.5rem; }
+      .actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+      a, button { padding: 0.5rem 1rem; border-radius: 0.375rem; font: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; }
+      .primary { background: #111; color: #fff; }
+      .secondary { background: #fff; color: #111; border-color: #d1d5db; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>This page didn't load</h1>
+      <p>Something went wrong on our end. You can try refreshing or head back home.</p>
+      <div class="actions">
+        <button class="primary" onclick="location.reload()">Try again</button>
+        <a class="secondary" href="/">Go home</a>
+      </div>
+    </div>
+  </body>
+</html>`;
+}export const ENGLISH_LEVELS = [
+  "No English test yet",
+  "A1","A2","B1","B2","C1","C2",
+  "IELTS 4.5","IELTS 5.0","IELTS 5.5","IELTS 6.0","IELTS 6.5","IELTS 7.0+",
+  "TOEFL iBT below 60","TOEFL iBT 60-78","TOEFL iBT 79-94","TOEFL iBT 95+",
+  "Duolingo below 90","Duolingo 90-104","Duolingo 105-119","Duolingo 120+",
+  "PTE 50-58","PTE 59-64","PTE 65-72","PTE 73+",
+  "Medium of Instruction letter",
+  "Other English proof",
+] as const;
+
+export const TRAVEL_PURPOSES = [
+  "Student visa",
+  "Tourist visa",
+  "Family visit",
+  "Business travel",
+  "Conference / event",
+  "Work travel",
+  "Medical travel",
+  "Other international travel",
+] as const;
+
+export const STATEMENT_PERIODS = [
+  "Less than 3 months",
+  "3 months",
+  "4 months",
+  "5 months",
+  "6 months",
+  "More than 6 months",
+] as const;
+
+export type StatementPeriod = (typeof STATEMENT_PERIODS)[number];
+
+// Countries known for stronger financial documentation requirements
+export const STRICT_FINANCIAL_COUNTRIES = [
+  "uk","united kingdom","usa","united states","canada","australia","new zealand","germany","ireland",
+];
+
+export function needsStrongerStatementPeriod(period?: string, targetCountry?: string) {
+  if (!period) return false;
+  if (period === "Less than 3 months") return true;
+  const c = (targetCountry ?? "").trim().toLowerCase();
+  if (!c) return false;
+  if (STRICT_FINANCIAL_COUNTRIES.includes(c) && (period === "3 months" || period === "4 months")) return true;
+  return false;
+}export type RiskLevel = "High Risk" | "Needs Work" | "Moderate" | "Strong" | "Very Strong";
+
+export function toRisk(score: number): RiskLevel {
+  if (score < 40) return "High Risk";
+  if (score < 60) return "Needs Work";
+  if (score < 75) return "Moderate";
+  if (score < 90) return "Strong";
+  return "Very Strong";
+}
+
+export function riskTone(level: RiskLevel): "risk" | "warning" | "info" | "success" {
+  if (level === "High Risk") return "risk";
+  if (level === "Needs Work") return "warning";
+  if (level === "Moderate") return "info";
+  return "success";
+}
+
+export function clamp(n: number, min = 0, max = 100) {
+  return Math.max(min, Math.min(max, n));
+}
+
+export function completenessPct(values: Record<string, unknown>, keys: string[]): number {
+  if (!keys.length) return 0;
+  const filled = keys.filter((k) => {
+    const v = values[k];
+    if (v == null) return false;
+    if (typeof v === "string") return v.trim().length > 0;
+    if (Array.isArray(v)) return v.length > 0;
+    return true;
+  }).length;
+  return Math.round((filled / keys.length) * 100);
+}
+
+export interface ProgramScanInput {
+  fullName?: string; originCountry?: string; educationLevel?: string;
+  fieldOfStudy?: string; targetCountry?: string; preferredProgram?: string;
+  degreeLevel?: string; gpa?: string; englishLevel?: string; budget?: string;
+  scholarship?: string; intake?: string; cityType?: string; workPreference?: string;
+  careerGoal?: string; availableDocuments?: string[]; priorRefusal?: string; notes?: string;
+  refusalCountry?: string;
+  refusalDate?: string;
+  refusalVisaType?: string;
+  refusalReason?: string;
+  refusalChanges?: string;
+  refusalLetterName?: string;
+  refusalNotes?: string;
+}
+
+export function scoreProgram(i: ProgramScanInput) {
+  let score = 30;
+  const strengths: string[] = [];
+  const weaknesses: string[] = [];
+  if (i.targetCountry) { score += 8; strengths.push("Target country selected"); } else weaknesses.push("Missing target country");
+  if (i.preferredProgram) { score += 6; strengths.push("Specific program named"); } else weaknesses.push("No specific program chosen");
+  if (i.fieldOfStudy) score += 4;
+  if (i.gpa) { score += 6; strengths.push("Academic record provided"); } else weaknesses.push("GPA missing");
+  if (i.englishLevel) { score += 8; strengths.push("English level documented"); } else weaknesses.push("English level not stated");
+  if (i.budget) { score += 6; strengths.push("Budget defined"); } else weaknesses.push("Budget not estimated");
+  if (i.careerGoal && i.careerGoal.length > 30) { score += 8; strengths.push("Clear career goal"); }
+  if ((i.availableDocuments ?? []).length >= 3) { score += 8; strengths.push("Core documents available"); }
+  if (i.priorRefusal === "yes") { score -= 10; weaknesses.push("Prior refusal — explanation required"); }
+  if (i.priorRefusal === "yes") {
+    if (i.refusalChanges && i.refusalChanges.length > 30) { score += 6; strengths.push("Clear explanation of what changed since refusal"); }
+    else weaknesses.push("Explain what changed since the previous refusal");
+    if (!i.refusalReason) weaknesses.push("Refusal reason not stated");
+  }
+  if (i.scholarship === "required" && !i.budget) weaknesses.push("Scholarship needed but no budget plan");
+  score = clamp(score);
+  return {
+    score,
+    risk: toRisk(score),
+    strengths,
+    weaknesses,
+    alternatives: [
+      "Consider similar programs in 2 backup countries",
+      "Shortlist 3 universities at different selectivity levels",
+      "Explore part-time/work-study eligible options",
+    ],
+    actionPlan: [
+      "Confirm program eligibility on official university page",
+      "Prepare English proof certificate if not ready",
+      "Draft a strong statement of purpose",
+      "Verify intake deadlines on official sources",
+    ],
+  };
+}
+
+export type DocStatus = "Available" | "Missing" | "Unclear" | "Expired" | "Needs translation" | "Needs legalization" | "Not applicable";
+export const DOC_STATUSES: DocStatus[] = ["Available","Missing","Unclear","Expired","Needs translation","Needs legalization","Not applicable"];
+
+export const DOCUMENT_LIST = [
+  "Passport","Transcript","Degree certificate / Grade 12 certificate","National entrance exam result",
+  "CV","Motivation letter","Recommendation letter","English proof","Admission letter",
+  "Pre-enrollment receipt","Declaration of Value","CIMEA statement",
+  "Translation status","Legalization status","Family sponsorship letter","Bank statement",
+  "Sponsor employment proof","Sponsor business proof","Birth certificate","Police clearance",
+  "Travel insurance","Accommodation proof","Visa application form","Appointment confirmation","Other country-specific files",
+];
+
+export function scoreDocuments(items: Record<string, DocStatus>) {
+  const entries = Object.entries(items);
+  let total = 0, applicable = 0;
+  const missing: string[] = [], urgent: string[] = [], translation: string[] = [], legalization: string[] = [];
+  entries.forEach(([name, s]) => {
+    if (s === "Not applicable") return;
+    applicable++;
+    switch (s) {
+      case "Available": total += 100; break;
+      case "Needs translation": total += 60; translation.push(name); break;
+      case "Needs legalization": total += 60; legalization.push(name); break;
+      case "Unclear": total += 40; urgent.push(name); break;
+      case "Expired": total += 20; urgent.push(name); break;
+      case "Missing": total += 0; missing.push(name); break;
+    }
+  });
+  const score = applicable ? Math.round(total / applicable) : 0;
+  return {
+    score,
+    risk: toRisk(score),
+    missing, urgent, translation, legalization,
+    actionPlan: [
+      missing.length ? `Obtain ${missing.length} missing document(s)` : "All required documents present",
+      translation.length ? `Translate: ${translation.slice(0,3).join(", ")}` : "Translations complete",
+      legalization.length ? `Legalize/apostille: ${legalization.slice(0,3).join(", ")}` : "Legalizations complete",
+      "Keep originals + scanned copies organized by category",
+    ],
+  };
+}
+
+export interface FinancialInput {
+  sponsorName?: string; sponsorRelation?: string; bankName?: string;
+  statementPeriod?: string; currency?: string;
+  statementPeriodLength?: string;
+  openingBalance?: number; closingBalance?: number; averageBalance?: number;
+  tuitionFee?: number; livingCost?: number;
+  monthlyIncome?: number; monthlyExpenses?: number;
+  largeDepositNotes?: string; sourceOfFunds?: string;
+  sponsorJobProof?: string; sponsorBusinessProof?: string;
+  accommodationProof?: string; familySupport?: string; countryNotes?: string;
+  targetCountry?: string;
+}
+
+export function scoreFinancial(i: FinancialInput) {
+  const required = (i.tuitionFee ?? 0) + (i.livingCost ?? 0);
+  const have = i.averageBalance ?? 0;
+  const gap = Math.max(0, required - have);
+  let score = 25;
+  if (required > 0 && have >= required) score += 30;
+  else if (required > 0 && have >= required * 0.7) score += 18;
+  else if (have > 0) score += 8;
+  if (i.sourceOfFunds && i.sourceOfFunds.length > 40) score += 12;
+  if (i.sponsorRelation) score += 8;
+  if (i.sponsorJobProof === "available" || i.sponsorBusinessProof === "available") score += 10;
+  if (i.accommodationProof === "available") score += 5;
+  if (i.largeDepositNotes && i.largeDepositNotes.length > 30) score += 10;
+  if ((i.openingBalance ?? 0) > 0 && (i.closingBalance ?? 0) > 0) score += 5;
+  score = clamp(score);
+  const missing: string[] = [];
+  if (!i.sponsorJobProof || i.sponsorJobProof !== "available") missing.push("Sponsor job/business proof");
+  if (!i.sourceOfFunds) missing.push("Source of funds explanation");
+  if (!i.accommodationProof) missing.push("Accommodation proof");
+  return {
+    score, risk: toRisk(score), gap,
+    consistency: have && i.openingBalance && Math.abs(i.openingBalance - have) > have * 0.5
+      ? "Large fluctuation — be ready to explain"
+      : "Balance appears reasonably consistent",
+    depositQuality: i.largeDepositNotes && i.largeDepositNotes.length > 30 ? "Explained" : "Needs clearer explanation",
+    sponsorClarity: i.sponsorRelation ? "Clear" : "Unclear",
+    sourceClarity: i.sourceOfFunds && i.sourceOfFunds.length > 40 ? "Clear" : "Vague",
+    missing,
+    nextSteps: [
+      gap > 0 ? `Close funding gap of ~${gap.toLocaleString()} ${i.currency ?? ""}` : "Funding target met on paper",
+      "Keep statement period continuous (typically last 3–6 months)",
+      "Prepare a written, truthful source-of-funds note",
+      "Attach sponsor employment / business documents",
+    ],
+  };
+}
+
+export interface InterviewInput {
+  mode: "Beginner" | "Normal" | "Strict";
+  targetCountry?: string; visaType?: string; program?: string; university?: string;
+  sponsorRelation?: string; question: string; answer: string;
+}
+
+export function scoreInterview(i: InterviewInput) {
+  const a = i.answer.toLowerCase();
+  const len = i.answer.trim().split(/\s+/).filter(Boolean).length;
+  const has = (re: RegExp) => re.test(a);
+  const clarity = clamp(40 + Math.min(40, len)); // longer = clearer (up to a point)
+  const specificity = clamp(
+    (has(/program|course|major/) ? 25 : 0) +
+    (has(/university|college|school/) ? 25 : 0) +
+    (i.university && a.includes(i.university.toLowerCase()) ? 20 : 0) +
+    (has(/\d/) ? 15 : 0) + 15
+  );
+  const consistency = clamp(has(/sponsor|father|mother|parent|family|self/) ? 75 : 45);
+  const financial = clamp(has(/tuition|cost|budget|fund|bank|scholarship|sponsor/) ? 80 : 35);
+  const returnPlan = clamp(has(/return|home|after graduation|career|job in/) ? 80 : 35);
+  let avg = (clarity + specificity + consistency + financial + returnPlan) / 5;
+  if (i.mode === "Strict") avg *= 0.85;
+  if (i.mode === "Beginner") avg = clamp(avg + 8);
+  const score = clamp(Math.round(avg));
+  const strong: string[] = [], weak: string[] = [];
+  if (specificity >= 70) strong.push("Specific program/university references"); else weak.push("Add specific university & program names");
+  if (financial >= 70) strong.push("Financial plan addressed"); else weak.push("Mention tuition, living cost, and sponsor");
+  if (returnPlan >= 70) strong.push("Return plan implied"); else weak.push("Explain career & return plan after studies");
+  if (clarity < 60) weak.push("Answer is too short — aim for 3–5 clear sentences");
+  return {
+    score, risk: toRisk(score),
+    clarity, specificity, consistency, financial, returnPlan,
+    strong, weak,
+    betterStructure: `I chose [program] at [university] in ${i.targetCountry || "[country]"} because [specific reason]. My sponsor is [relation], who works as [job/business]. My planned budget is [amount] covering tuition and living costs. After graduation, I plan to [career goal] in [country], which is why I will return home.`,
+    nextQuestions: [
+      "Who is sponsoring your studies?",
+      "How will this program help your career?",
+      "Why should the embassy believe you will return?",
+    ],
+  };
+}
+
+export function finalReport(scores: { program?: number; document?: number; financial?: number; interview?: number }) {
+  const vals = [scores.program ?? 0, scores.document ?? 0, scores.financial ?? 0, scores.interview ?? 0];
+  const overall = Math.round(vals.reduce((a, b) => a + b, 0) / 4);
+  return { overall, risk: toRisk(overall) };
+}const isClient = typeof window !== "undefined";
+
+export function loadJSON<T>(key: string, fallback: T): T {
+  if (!isClient) return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+export function saveJSON(key: string, value: unknown) {
+  if (!isClient) return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+}
+export function clearAllPreviewData() {
+  if (!isClient) return;
+  Object.keys(STORAGE_KEYS).forEach((k) => localStorage.removeItem(STORAGE_KEYS[k as keyof typeof STORAGE_KEYS]));
+}
+export const STORAGE_KEYS = {
+  profile: "brovi.profile",
+  program: "brovi.scan.program",
+  document: "brovi.scan.document",
+  financial: "brovi.scan.financial",
+  interview: "brovi.scan.interview",
+  report: "brovi.report",
+  consultant: "brovi.consultant",
+  theme: "brovi.theme",
+} as const;import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  Outlet,
+  Link,
+  createRootRouteWithContext,
+  useRouter,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
+
+import appCss from "../styles.css?url";
+import { Toaster } from "sonner";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { initAppearance } from "@/lib/appearance";
+
+function NotFoundComponent() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-7xl font-bold text-foreground">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist or has been moved.
+        </p>
+        <div className="mt-6">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Go home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+  console.error(error);
+  const router = useRouter();
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          This page didn't load
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong on our end. You can try refreshing or head back home.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Try again
+          </button>
+          <a
+            href="/"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          >
+            Go home
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "Brovi Scan — AI travel & visa readiness review" },
+      { name: "description", content: "Check your travel readiness before you submit. Brovi Scan reviews documents, financial preparation, interview answers, and overall readiness for visas, study, business, family visits, tourism, and other international travel." },
+      { name: "author", content: "Brovi Scan" },
+      { property: "og:title", content: "Brovi Scan" },
+      { property: "og:description", content: "AI-assisted travel and visa readiness review for travelers worldwide." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:site", content: "@Lovable" },
+    ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: appCss,
+      },
+    ],
+  }),
+  shellComponent: RootShell,
+  component: RootComponent,
+  notFoundComponent: NotFoundComponent,
+  errorComponent: ErrorComponent,
+});
+
+function RootShell({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => { initAppearance(); }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      router.invalidate();
+      queryClient.invalidateQueries();
+      if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session?.user) {
+        const u = session.user;
+        supabase
+          .from("profiles")
+          .upsert(
+            {
+              id: u.id,
+              email: u.email ?? null,
+              full_name: (u.user_metadata?.full_name as string) ?? (u.user_metadata?.name as string) ?? null,
+              country_of_origin: (u.user_metadata?.country_of_origin as string) ?? (u.user_metadata?.origin_country as string) ?? null,
+              target_country: (u.user_metadata?.target_country as string) ?? null,
+              travel_purpose: (u.user_metadata?.travel_purpose as string) ?? null,
+            },
+            { onConflict: "id" },
+          )
+          .then(({ error }) => { if (error) console.warn("profile upsert", error.message); });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [router, queryClient]);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+      <Toaster richColors closeButton position="top-right" />
+    </QueryClientProvider>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/app/admin")({
+  head: () => ({ meta: [{ title: "Admin — Brovi Scan" }] }),
+  component: AdminPage,
+});
+
+type Req = { id: string; full_name: string; target_country: string | null; support_type: string | null; status: string; admin_note: string | null; created_at: string };
+const STATUS = ["pending","contacted","in_review","completed","rejected"];
+
+function AdminPage() {
+  const { user } = useAuth();
+  const [rows, setRows] = useState<Req[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase
+        .from("consultant_requests")
+        .select("id,full_name,target_country,support_type,status,admin_note,created_at")
+        .order("created_at", { ascending: false });
+      if (error) console.error(error);
+      setRows((data as any) ?? []);
+      setLoading(false);
+    })();
+  }, [user?.id]);
+
+  const setStatus = async (id: string, v: string) => {
+    setRows((r) => r.map((x) => x.id === id ? { ...x, status: v } : x));
+    const { error } = await supabase.from("consultant_requests").update({ status: v }).eq("id", id);
+    if (error) toast.error(error.message);
+  };
+  const setNote = async (id: string, v: string) => {
+    setRows((r) => r.map((x) => x.id === id ? { ...x, admin_note: v } : x));
+  };
+  const saveNote = async (id: string, v: string) => {
+    const { error } = await supabase.from("consultant_requests").update({ admin_note: v }).eq("id", id);
+    if (error) toast.error(error.message);
+  };
+
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-semibold">Admin</h1>
+        <p className="text-sm text-muted-foreground">Consultant requests (admin role required to view all).</p>
+      </header>
+      <div className="grid sm:grid-cols-3 gap-3">
+        <Stat label="Total requests" value={String(rows.length)} />
+        <Stat label="Pending" value={String(rows.filter((r) => r.status === "pending").length)} />
+        <Stat label="Completed" value={String(rows.filter((r) => r.status === "completed").length)} />
+      </div>
+      <div className="rounded-xl border bg-card overflow-x-auto">
+        <table className="w-full text-sm min-w-[700px]">
+          <thead className="bg-secondary/60 text-muted-foreground">
+            <tr><th className="text-left p-3">ID</th><th className="text-left p-3">Name</th><th className="text-left p-3">Target</th><th className="text-left p-3">Support type</th><th className="text-left p-3">Status</th><th className="text-left p-3">Admin note</th></tr>
+          </thead>
+          <tbody>
+            {loading && <tr><td colSpan={6} className="p-4 text-center text-muted-foreground">Loading…</td></tr>}
+            {!loading && rows.length === 0 && <tr><td colSpan={6} className="p-4 text-center text-muted-foreground">No requests yet.</td></tr>}
+            {rows.map((r) => (
+              <tr key={r.id} className="border-t">
+                <td className="p-3"><Badge variant="outline">{r.id.slice(0,8)}</Badge></td>
+                <td className="p-3 font-medium">{r.full_name}</td>
+                <td className="p-3">{r.target_country ?? "—"}</td>
+                <td className="p-3">{r.support_type ?? "—"}</td>
+                <td className="p-3">
+                  <Select value={r.status} onValueChange={(v) => setStatus(r.id, v)}>
+                    <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+                    <SelectContent>{STATUS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                  </Select>
+                </td>
+                <td className="p-3"><Input value={r.admin_note ?? ""} onChange={(e) => setNote(r.id, e.target.value)} onBlur={(e) => saveNote(r.id, e.target.value)} className="min-w-[160px]" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+function Stat({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-xl border bg-card p-4"><p className="text-xs text-muted-foreground">{label}</p><p className="text-2xl font-semibold">{value}</p></div>;
+}import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { loadJSON, saveJSON, STORAGE_KEYS } from "@/lib/storage";
+import { scoreFi

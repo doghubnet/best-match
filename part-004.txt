@@ -1,0 +1,1236 @@
+ar-accent data-[active=true]:text-sidebar-accent-foreground",
+        size === "sm" && "text-xs",
+        size === "md" && "text-sm",
+        "group-data-[collapsible=icon]:hidden",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+SidebarMenuSubButton.displayName = "SidebarMenuSubButton";
+
+export {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInput,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+};import { cn } from "@/lib/utils";
+
+function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("animate-pulse rounded-md bg-primary/10", className)} {...props} />;
+}
+
+export { Skeleton };import * as React from "react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
+
+import { cn } from "@/lib/utils";
+
+const Slider = React.forwardRef<
+  React.ElementRef<typeof SliderPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
+>(({ className, ...props }, ref) => (
+  <SliderPrimitive.Root
+    ref={ref}
+    className={cn("relative flex w-full touch-none select-none items-center", className)}
+    {...props}
+  >
+    <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20">
+      <SliderPrimitive.Range className="absolute h-full bg-primary" />
+    </SliderPrimitive.Track>
+    <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50" />
+  </SliderPrimitive.Root>
+));
+Slider.displayName = SliderPrimitive.Root.displayName;
+
+export { Slider };import { Toaster as Sonner } from "sonner";
+
+type ToasterProps = React.ComponentProps<typeof Sonner>;
+
+const Toaster = ({ ...props }: ToasterProps) => {
+  return (
+    <Sonner
+      className="toaster group"
+      toastOptions={{
+        classNames: {
+          toast:
+            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+          description: "group-[.toast]:text-muted-foreground",
+          actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+          cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+        },
+      }}
+      {...props}
+    />
+  );
+};
+
+export { Toaster };import * as React from "react";
+import * as SwitchPrimitives from "@radix-ui/react-switch";
+
+import { cn } from "@/lib/utils";
+
+const Switch = React.forwardRef<
+  React.ElementRef<typeof SwitchPrimitives.Root>,
+  React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
+>(({ className, ...props }, ref) => (
+  <SwitchPrimitives.Root
+    className={cn(
+      "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
+      className,
+    )}
+    {...props}
+    ref={ref}
+  >
+    <SwitchPrimitives.Thumb
+      className={cn(
+        "pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0",
+      )}
+    />
+  </SwitchPrimitives.Root>
+));
+Switch.displayName = SwitchPrimitives.Root.displayName;
+
+export { Switch };import * as React from "react";
+
+import { cn } from "@/lib/utils";
+
+const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
+  ({ className, ...props }, ref) => (
+    <div className="relative w-full overflow-auto">
+      <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+    </div>
+  ),
+);
+Table.displayName = "Table";
+
+const TableHeader = React.forwardRef<
+  HTMLTableSectionElement,
+  React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+  <thead ref={ref} className={cn("[&_tr]:border-b", className)} {...props} />
+));
+TableHeader.displayName = "TableHeader";
+
+const TableBody = React.forwardRef<
+  HTMLTableSectionElement,
+  React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+  <tbody ref={ref} className={cn("[&_tr:last-child]:border-0", className)} {...props} />
+));
+TableBody.displayName = "TableBody";
+
+const TableFooter = React.forwardRef<
+  HTMLTableSectionElement,
+  React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+  <tfoot
+    ref={ref}
+    className={cn("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className)}
+    {...props}
+  />
+));
+TableFooter.displayName = "TableFooter";
+
+const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
+  ({ className, ...props }, ref) => (
+    <tr
+      ref={ref}
+      className={cn(
+        "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
+TableRow.displayName = "TableRow";
+
+const TableHead = React.forwardRef<
+  HTMLTableCellElement,
+  React.ThHTMLAttributes<HTMLTableCellElement>
+>(({ className, ...props }, ref) => (
+  <th
+    ref={ref}
+    className={cn(
+      "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+      className,
+    )}
+    {...props}
+  />
+));
+TableHead.displayName = "TableHead";
+
+const TableCell = React.forwardRef<
+  HTMLTableCellElement,
+  React.TdHTMLAttributes<HTMLTableCellElement>
+>(({ className, ...props }, ref) => (
+  <td
+    ref={ref}
+    className={cn(
+      "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+      className,
+    )}
+    {...props}
+  />
+));
+TableCell.displayName = "TableCell";
+
+const TableCaption = React.forwardRef<
+  HTMLTableCaptionElement,
+  React.HTMLAttributes<HTMLTableCaptionElement>
+>(({ className, ...props }, ref) => (
+  <caption ref={ref} className={cn("mt-4 text-sm text-muted-foreground", className)} {...props} />
+));
+TableCaption.displayName = "TableCaption";
+
+export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption };import * as React from "react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+
+import { cn } from "@/lib/utils";
+
+const Tabs = TabsPrimitive.Root;
+
+const TabsList = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.List>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.List
+    ref={ref}
+    className={cn(
+      "inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground",
+      className,
+    )}
+    {...props}
+  />
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
+
+const TabsTrigger = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background cursor-pointer transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow",
+      className,
+    )}
+    {...props}
+  />
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+
+const TabsContent = React.forwardRef<
+  React.ElementRef<typeof TabsPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.Content
+    ref={ref}
+    className={cn(
+      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      className,
+    )}
+    {...props}
+  />
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
+
+export { Tabs, TabsList, TabsTrigger, TabsContent };import * as React from "react";
+
+import { cn } from "@/lib/utils";
+
+const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<"textarea">>(
+  ({ className, ...props }, ref) => {
+    return (
+      <textarea
+        className={cn(
+          "flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          className,
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
+  },
+);
+Textarea.displayName = "Textarea";
+
+export { Textarea };"use client";
+
+import * as React from "react";
+import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
+import { type VariantProps } from "class-variance-authority";
+
+import { cn } from "@/lib/utils";
+import { toggleVariants } from "@/components/ui/toggle";
+
+const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariants>>({
+  size: "default",
+  variant: "default",
+});
+
+const ToggleGroup = React.forwardRef<
+  React.ElementRef<typeof ToggleGroupPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root> &
+    VariantProps<typeof toggleVariants>
+>(({ className, variant, size, children, ...props }, ref) => (
+  <ToggleGroupPrimitive.Root
+    ref={ref}
+    className={cn("flex items-center justify-center gap-1", className)}
+    {...props}
+  >
+    <ToggleGroupContext.Provider value={{ variant, size }}>{children}</ToggleGroupContext.Provider>
+  </ToggleGroupPrimitive.Root>
+));
+
+ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
+
+const ToggleGroupItem = React.forwardRef<
+  React.ElementRef<typeof ToggleGroupPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item> &
+    VariantProps<typeof toggleVariants>
+>(({ className, children, variant, size, ...props }, ref) => {
+  const context = React.useContext(ToggleGroupContext);
+
+  return (
+    <ToggleGroupPrimitive.Item
+      ref={ref}
+      className={cn(
+        toggleVariants({
+          variant: context.variant || variant,
+          size: context.size || size,
+        }),
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </ToggleGroupPrimitive.Item>
+  );
+});
+
+ToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName;
+
+export { ToggleGroup, ToggleGroupItem };import * as React from "react";
+import * as TogglePrimitive from "@radix-ui/react-toggle";
+import { cva, type VariantProps } from "class-variance-authority";
+
+import { cn } from "@/lib/utils";
+
+const toggleVariants = cva(
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium cursor-pointer transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed data-[state=on]:bg-accent data-[state=on]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default: "bg-transparent",
+        outline:
+          "border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground",
+      },
+      size: {
+        default: "h-9 px-2 min-w-9",
+        sm: "h-8 px-1.5 min-w-8",
+        lg: "h-10 px-2.5 min-w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  },
+);
+
+const Toggle = React.forwardRef<
+  React.ElementRef<typeof TogglePrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>
+>(({ className, variant, size, ...props }, ref) => (
+  <TogglePrimitive.Root
+    ref={ref}
+    className={cn(toggleVariants({ variant, size, className }))}
+    {...props}
+  />
+));
+
+Toggle.displayName = TogglePrimitive.Root.displayName;
+
+export { Toggle, toggleVariants };"use client";
+
+import * as React from "react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+
+import { cn } from "@/lib/utils";
+
+const TooltipProvider = TooltipPrimitive.Provider;
+
+const Tooltip = TooltipPrimitive.Root;
+
+const TooltipTrigger = TooltipPrimitive.Trigger;
+
+const TooltipContent = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+  <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Content
+      ref={ref}
+      sideOffset={sideOffset}
+      className={cn(
+        "z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-tooltip-content-transform-origin)",
+        className,
+      )}
+      {...props}
+    />
+  </TooltipPrimitive.Portal>
+));
+TooltipContent.displayName = TooltipPrimitive.Content.displayName;
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+import { BroviAssistant } from "@/components/BroviAssistant";
+import { LayoutDashboard, User, GraduationCap, FileCheck2, Wallet, MessageSquareQuote, FileBarChart, Users2, Settings, Shield } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+
+const baseItems = [
+  { to: "/app", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/app/profile", label: "Profile", icon: User },
+  { to: "/app/program-match", label: "Program Match Scan", icon: GraduationCap },
+  { to: "/app/documents", label: "Document Scan", icon: FileCheck2 },
+  { to: "/app/bank", label: "Bank Statement Scan", icon: Wallet },
+  { to: "/app/interview", label: "Interview Practice", icon: MessageSquareQuote },
+  { to: "/app/report", label: "Readiness Report", icon: FileBarChart },
+  { to: "/app/consultant", label: "Consultant Review", icon: Users2 },
+  { to: "/app/settings", label: "Settings", icon: Settings },
+];
+
+export function AppShell() {
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) { setIsAdmin(false); return; }
+    supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle()
+      .then(({ data }) => { if (!cancelled) setIsAdmin(!!data); });
+    return () => { cancelled = true; };
+  }, [user?.id]);
+  const items = isAdmin
+    ? [...baseItems.slice(0, -1), { to: "/app/admin", label: "Admin", icon: Shield }, baseItems[baseItems.length - 1]]
+    : baseItems;
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <TopNav />
+      <div className="flex-1 container mx-auto px-4 py-6 grid gap-6 lg:grid-cols-[240px_1fr]">
+        <aside className="hidden lg:block">
+          <nav className="sticky top-20 space-y-1">
+            {items.map((i) => {
+              const active = i.exact ? path === i.to : path.startsWith(i.to);
+              return (
+                <Link key={i.to} to={i.to}
+                  className={cn("flex items-center gap-2 px-3 py-2 rounded-md text-sm",
+                    active ? "bg-secondary text-foreground font-medium" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground")}>
+                  <i.icon className="h-4 w-4" />{i.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
+        <main className="min-w-0">
+          <Outlet />
+        </main>
+      </div>
+      <BroviAssistant />
+    </div>
+  );
+}import { useEffect, useRef, useState } from "react";
+import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { invokeAI } from "@/lib/ai";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
+
+type Msg = { role: "user" | "assistant"; content: string };
+
+const GUEST_KEY = "brovi:assistant:guest";
+const WELCOME: Msg = {
+  role: "assistant",
+  content:
+    "Hi! I'm Brovi Assistant. Ask me about study visa preparation, documents, financial readiness, interview practice, or how to use Brovi Scan. Guidance only — final decisions are made by official institutions.",
+};
+
+export function BroviAssistant() {
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<Msg[]>([WELCOME]);
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!user) {
+      try {
+        const raw = localStorage.getItem(GUEST_KEY);
+        if (raw) setMessages(JSON.parse(raw));
+      } catch { /* ignore */ }
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      try { localStorage.setItem(GUEST_KEY, JSON.stringify(messages)); } catch { /* ignore */ }
+    }
+  }, [messages, user]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, open]);
+
+  const ensureSession = async (): Promise<string | null> => {
+    if (!user) return null;
+    if (sessionId) return sessionId;
+    const { data, error } = await supabase
+      .from("chat_sessions")
+      .insert({ user_id: user.id, title: "Brovi Assistant" })
+      .select("id")
+      .single();
+    if (error) { console.error(error); return null; }
+    setSessionId(data.id);
+    return data.id;
+  };
+
+  const send = async () => {
+    const text = input.trim();
+    if (!text || busy) return;
+    const next = [...messages, { role: "user" as const, content: text }];
+    setMessages(next);
+    setInput("");
+    setBusy(true);
+    const sid = await ensureSession();
+    if (sid && user) {
+      await supabase.from("chat_messages").insert({ session_id: sid, user_id: user.id, role: "user", content: text });
+    }
+    const res = await invokeAI<unknown>("brovi-assistant-chat", { messages: next.map(({ role, content }) => ({ role, content })) });
+    const reply = res.ok ? (res.reply ?? "") : (res.message ?? "Sorry, something went wrong.");
+    setMessages((m) => [...m, { role: "assistant", content: reply }]);
+    if (sid && user) {
+      await supabase.from("chat_messages").insert({ session_id: sid, user_id: user.id, role: "assistant", content: reply });
+    }
+    setBusy(false);
+  };
+
+  return (
+    <>
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open Brovi Assistant"
+          className="fixed bottom-5 right-5 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-105 transition-transform grid place-items-center"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </button>
+      )}
+      {open && (
+        <div className={cn(
+          "fixed bottom-5 right-5 z-50 w-[min(380px,calc(100vw-2rem))] h-[min(560px,calc(100vh-2rem))]",
+          "flex flex-col rounded-xl border bg-card shadow-2xl brovi-fade-up overflow-hidden",
+        )}>
+          <div className="flex items-center justify-between px-4 py-3 border-b bg-secondary/40">
+            <div>
+              <p className="font-semibold text-sm">Brovi Assistant</p>
+              <p className="text-xs text-muted-foreground">Study visa preparation help</p>
+            </div>
+            <button onClick={() => setOpen(false)} aria-label="Close" className="p-1 rounded-md hover:bg-secondary">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+            {messages.map((m, i) => (
+              <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
+                <div className={cn(
+                  "max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap",
+                  m.role === "user" ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground",
+                )}>{m.content}</div>
+              </div>
+            ))}
+            {busy && <div className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-3 w-3 animate-spin" />Thinking…</div>}
+          </div>
+          <form
+            className="border-t p-3 flex gap-2"
+            onSubmit={(e) => { e.preventDefault(); send(); }}
+          >
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about documents, interviews, finances…"
+              className="flex-1 rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              disabled={busy}
+            />
+            <Button type="submit" size="icon" disabled={busy || !input.trim()}>
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+        </div>
+      )}
+    </>
+  );
+}import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+const HEADER_LOGO = "https://i.imgur.com/Gbomc48.jpeg";
+const CARD_LOGO = "https://i.imgur.com/DJS3c73.jpeg";
+
+export function BroviHeaderLogo({ className }: { className?: string }) {
+  const [err, setErr] = useState(false);
+  if (err) {
+    return (
+      <span className={cn("grid place-items-center h-9 w-9 rounded-md brovi-gradient text-white text-xs font-bold", className)}>BS</span>
+    );
+  }
+  return (
+    <span className={cn("grid place-items-center h-9 w-9 rounded-md overflow-hidden bg-white dark:bg-white/90 border", className)}>
+      <img src={HEADER_LOGO} alt="Brovi Scan" className="h-full w-full object-contain" onError={() => setErr(true)} />
+    </span>
+  );
+}
+
+export function BroviCardLogo({ className }: { className?: string }) {
+  const [err, setErr] = useState(false);
+  if (err) {
+    return (
+      <div className={cn("mx-auto grid place-items-center h-20 w-20 rounded-xl brovi-gradient text-white text-lg font-bold", className)}>Brovi</div>
+    );
+  }
+  return (
+    <div className={cn("mx-auto h-20 w-24 rounded-xl overflow-hidden bg-white dark:bg-white/90 border grid place-items-center", className)}>
+      <img src={CARD_LOGO} alt="Brovi Scan" className="h-full w-full object-contain" onError={() => setErr(true)} />
+    </div>
+  );
+}
+
+const GOOGLE_ICON = "https://thumbs.dreamstime.com/b/google-logo-vector-format-white-background-illustration-407571048.jpg";
+export function GoogleIcon({ className }: { className?: string }) {
+  const [err, setErr] = useState(false);
+  if (err) return <span className={cn("inline-block h-4 w-4 rounded-full bg-muted", className)} />;
+  return <img src={GOOGLE_ICON} alt="" className={cn("h-4 w-4 object-contain rounded-sm", className)} onError={() => setErr(true)} />;
+}import { ShieldAlert } from "lucide-react";
+
+export function DisclaimerBanner({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={`flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 text-foreground ${compact ? "p-2 text-xs" : "p-3 text-sm"}`}>
+      <ShieldAlert className="h-4 w-4 mt-0.5 text-warning shrink-0" />
+      <p className="leading-snug">
+        Brovi Scan provides preparation guidance only. Final decisions are made by official authorities,
+        universities, embassies, consulates, visa centers, immigration offices, airlines, border authorities,
+        scholarship bodies, or related institutions.
+      </p>
+    </div>
+  );
+}import { useState, forwardRef } from "react";
+import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+type Props = React.ComponentProps<typeof Input>;
+
+export const PasswordInput = forwardRef<HTMLInputElement, Props>(function PasswordInput(
+  { className, ...props },
+  ref,
+) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input ref={ref} type={show ? "text" : "password"} className={cn("pr-10", className)} {...props} />
+      <button
+        type="button"
+        aria-label={show ? "Hide password" : "Show password"}
+        onClick={() => setShow((s) => !s)}
+        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+        tabIndex={-1}
+      >
+        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+});import { toRisk, riskTone } from "@/lib/scoring";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+
+export function ScoreRing({ value, size = 140, label = "Overall" }: { value: number; size?: number; label?: string }) {
+  const v = Math.max(0, Math.min(100, value));
+  const r = (size - 16) / 2;
+  const c = 2 * Math.PI * r;
+  const dash = (v / 100) * c;
+  const tone = riskTone(toRisk(v));
+  const stroke =
+    tone === "risk" ? "var(--risk)" : tone === "warning" ? "var(--warning)" : tone === "info" ? "var(--cyan)" : "var(--success)";
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size/2} cy={size/2} r={r} stroke="var(--color-muted)" strokeWidth="10" fill="none" />
+        <circle cx={size/2} cy={size/2} r={r} stroke={stroke} strokeWidth="10" fill="none"
+          strokeDasharray={`${dash} ${c - dash}`} strokeLinecap="round" />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-3xl font-semibold">{v}</span>
+        <span className="text-xs text-muted-foreground">{label}</span>
+      </div>
+    </div>
+  );
+}
+
+export function RiskBadge({ score }: { score: number }) {
+  const level = toRisk(score);
+  const tone = riskTone(level);
+  const cls = {
+    risk: "bg-risk/15 text-risk border-risk/30",
+    warning: "bg-warning/15 text-warning border-warning/30",
+    info: "bg-cyan-brand/15 text-cyan-brand border-cyan-brand/30",
+    success: "bg-success/15 text-success border-success/30",
+  }[tone];
+  return <Badge variant="outline" className={cn("border font-medium", cls)}>{level}</Badge>;
+}
+
+export function ScoreCard({ title, score, subtitle, icon }: { title: string; score: number; subtitle?: string; icon?: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border bg-card p-4 flex items-center gap-4 brovi-fade-up">
+      <ScoreRing value={score} size={88} label="" />
+      <div className="min-w-0">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">{icon}{title}</div>
+        <div className="text-2xl font-semibold leading-tight">{score}<span className="text-sm text-muted-foreground">/100</span></div>
+        {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+        <div className="mt-2"><RiskBadge score={score} /></div>
+      </div>
+    </div>
+  );
+}
+
+export function ScoreBarChart({ data }: { data: { name: string; score: number }[] }) {
+  const max = 100;
+  return (
+    <div className="space-y-3">
+      {data.map((d) => {
+        const tone = riskTone(toRisk(d.score));
+        const color = tone === "risk" ? "var(--risk)" : tone === "warning" ? "var(--warning)" : tone === "info" ? "var(--cyan)" : "var(--success)";
+        return (
+          <div key={d.name}>
+            <div className="flex justify-between text-sm mb-1"><span>{d.name}</span><span className="text-muted-foreground">{d.score}</span></div>
+            <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-full rounded-full transition-all" style={{ width: `${(d.score/max)*100}%`, background: color }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getStoredTheme, setStoredTheme, type ThemeMode } from "@/lib/appearance";
+
+export function useTheme() {
+  const [theme, setTheme] = useState<ThemeMode>("system");
+  useEffect(() => { setTheme(getStoredTheme()); }, []);
+  const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const toggle = () => {
+    const next: ThemeMode = isDark ? "light" : "dark";
+    setTheme(next);
+    setStoredTheme(next);
+  };
+  return { theme, isDark, toggle };
+}
+
+export function ThemeToggle() {
+  const { isDark, toggle } = useTheme();
+  return (
+    <button onClick={toggle} aria-label="Toggle theme"
+      className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+      {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+    </button>
+  );
+}import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Menu, X } from "lucide-react";
+import { BroviHeaderLogo } from "@/components/BroviLogo";
+import { useState } from "react";
+import { signOut, useAuth } from "@/hooks/use-auth";
+import { toast } from "sonner";
+
+const links = [
+  { to: "/app", label: "Dashboard" },
+  { to: "/app/program-match", label: "Program Match" },
+  { to: "/app/documents", label: "Document Scan" },
+  { to: "/app/bank", label: "Bank Statement" },
+  { to: "/app/interview", label: "Interview" },
+  { to: "/app/report", label: "Report" },
+  { to: "/pricing", label: "Pricing" },
+];
+
+export function TopNav() {
+  const [open, setOpen] = useState(false);
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  return (
+    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur no-print">
+      <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-4">
+        <Link to="/" className="flex items-center gap-2 font-semibold">
+          <BroviHeaderLogo />
+          <span>Brovi Scan</span>
+        </Link>
+        <nav className="hidden md:flex items-center gap-1">
+          {links.map((l) => (
+            <Link key={l.to} to={l.to}
+              className={`px-3 py-1.5 rounded-md text-sm transition-colors ${path.startsWith(l.to) && l.to !== "/" ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"}`}>
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {user ? (
+            <>
+              <span className="hidden sm:inline text-xs text-muted-foreground max-w-[180px] truncate">{user.email}</span>
+              <Button size="sm" variant="outline" onClick={async () => { await signOut(); toast.success("Signed out"); navigate({ to: "/" }); }}>Sign out</Button>
+            </>
+          ) : (
+            <Button asChild size="sm" className="hidden sm:inline-flex"><Link to="/login">Sign in</Link></Button>
+          )}
+          <button className="md:hidden p-2 rounded-md hover:bg-secondary" onClick={() => setOpen((v) => !v)} aria-label="Menu">
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+      {open && (
+        <div className="md:hidden border-t bg-background">
+          <div className="container mx-auto px-4 py-2 flex flex-col">
+            {links.map((l) => (
+              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="py-2 text-sm">{l.label}</Link>
+            ))}
+            <Link to="/login" onClick={() => setOpen(false)} className="py-2 text-sm font-medium text-primary">Sign in</Link>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}import { useEffect, useState } from "react";
+import type { Session, User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+
+export function useAuth() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      setUser(s?.user ?? null);
+    });
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setUser(data.session?.user ?? null);
+      setLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return { session, user, loading };
+}
+
+export async function signOut() {
+  await supabase.auth.signOut();
+}import * as React from "react";
+
+const MOBILE_BREAKPOINT = 768;
+
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined);
+
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    };
+    mql.addEventListener("change", onChange);
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  return !!isMobile;
+}// This file is auto-generated by Lovable. Do not modify it.
+
+import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
+import { supabase } from "../supabase/client";
+const lovableAuth = createLovableAuth();
+
+type SignInOptions = {
+  redirect_uri?: string;
+  extraParams?: Record<string, string>;
+};
+
+export const lovable = {
+  auth: {
+    signInWithOAuth: async (provider: "google" | "apple" | "microsoft" | "lovable", opts?: SignInOptions) => {
+      const result = await lovableAuth.signInWithOAuth(provider, {
+        redirect_uri: opts?.redirect_uri,
+        extraParams: {
+          ...opts?.extraParams,
+        },
+      });
+
+      if (result.redirected) {
+        return result;
+      }
+
+      if (result.error) {
+        return result;
+      }
+
+      try {
+        await supabase.auth.setSession(result.tokens);
+      } catch (e) {
+        return { error: e instanceof Error ? e : new Error(String(e)) };
+      }
+      return result;
+    },
+  },
+};// This file is automatically generated. Do not edit it directly.
+import { createMiddleware } from '@tanstack/react-start'
+import { supabase } from './client'
+
+// Must be registered as a global `functionMiddleware` in `src/start.ts`; otherwise
+// the browser never attaches the bearer token to serverFn RPCs.
+export const attachSupabaseAuth = createMiddleware({ type: 'function' }).client(
+  async ({ next }) => {
+    const { data } = await supabase.auth.getSession()
+    const token = data.session?.access_token
+    return next({
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+  },
+)// This file is automatically generated. Do not edit it directly.
+import { createMiddleware } from '@tanstack/react-start'
+import { getRequest } from '@tanstack/react-start/server'
+import { createClient } from '@supabase/supabase-js'
+import type { Database } from './types'
+
+
+
+export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server(
+  async ({ next }) => {
+    
+    const SUPABASE_URL = process.env.SUPABASE_URL;
+    const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
+
+    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+      const missing = [
+        ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
+        ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
+      ];
+      const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
+      console.error(`[Supabase] ${message}`);
+      throw new Error(message);
+    }
+    
+    const request = getRequest();
+
+    if (!request?.headers) {
+      throw new Error('Unauthorized: No request headers available');
+    }
+
+    const authHeader = request.headers.get('authorization');
+
+    if (!authHeader) {
+      throw new Error('Unauthorized: No authorization header provided');
+    }
+
+    if (!authHeader.startsWith('Bearer ')) {
+      throw new Error('Unauthorized: Only Bearer tokens are supported');
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    if (!token) {
+      throw new Error('Unauthorized: No token provided');
+    }
+
+    const supabase = createClient<Database>(
+      SUPABASE_URL!,
+      SUPABASE_PUBLISHABLE_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+        auth: {
+          storage: undefined,
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      }
+    );
+
+    const { data, error } = await supabase.auth.getClaims(token);
+    if (error || !data?.claims) {
+      throw new Error('Unauthorized: Invalid token');
+    }
+
+    if (!data.claims.sub) {
+      throw new Error('Unauthorized: No user ID found in token');
+    }
+
+    return next({
+      context: {
+        supabase,
+        userId: data.claims.sub,
+        claims: data.claims,
+      },
+    });
+  },
+);// This file is automatically generated. Do not edit it directly.
+// Server-side Supabase client with service role key - bypasses RLS.
+// Use this for admin operations in server functions and server routes only.
+// For user-authenticated queries (with RLS), use the auth middleware instead.
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from './types';
+
+function createSupabaseAdminClient() {
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    const missing = [
+      ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
+      ...(!SUPABASE_SERVICE_ROLE_KEY ? ['SUPABASE_SERVICE_ROLE_KEY'] : []),
+    ];
+    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
+    console.error(`[Supabase] ${message}`);
+    throw new Error(message);
+  }
+
+  return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    auth: {
+      storage: undefined,
+      persistSession: false,
+      autoRefreshToken: false,
+    }
+  });
+}
+
+let _supabaseAdmin: ReturnType<typeof createSupabaseAdminClient> | undefined;
+
+// Server-side Supabase client with service role - bypasses RLS
+// SECURITY: Only use this for trusted server-side operations, never expose to client code
+// Import like: import { supabaseAdmin } from "@/integrations/supabase/client.server";
+export const supabaseAdmin = new Proxy({} as ReturnType<typeof createSupabaseAdminClient>, {
+  get(_, prop, receiver) {
+    if (!_supabaseAdmin) _supabaseAdmin = createSupabaseAdminClient();
+    return Reflect.get(_supabaseAdmin, prop, receiver);
+  },
+});// This file is automatically generated. Do not edit it directly.
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from './types';
+
+function createSupabaseClient() {
+  // Use import.meta.env for client-side (Vite build-time replacement)
+  // Fall back to process.env for SSR (server-side rendering)
+  const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_PUBLISHABLE_KEY;
+
+  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+    const missing = [
+      ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
+      ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
+    ];
+    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
+    console.error(`[Supabase] ${message}`);
+    throw new Error(message);
+  }
+
+  return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: {
+      storage: typeof window !== 'undefined' ? localStorage : undefined,
+      persistSession: true,
+      autoRefreshToken: true,
+    }
+  });
+}
+
+let _supabase: ReturnType<typeof createSupabaseClient> | undefined;
+
+// Import the supabase client like this:
+// import { supabase } from "@/integrations/supabase/client";
+export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>, {
+  get(_, prop, receiver) {
+    if (!_supabase) _supabase = createSupabaseClient();
+    return Reflect.get(_supabase, prop, receiver);
+  },
+});
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
+  public: {
+    Tables: {
+      app_settings: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          user_id: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          user_id: string
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          user_id?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity: string | null
+          entity_id: string | null
+          id: string
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity?: string | null
+          entity_id?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      bank_statement_scans: {
+        Row: {
+          created_at: string
+          id: string
+          input: Json
+          result: Json
+          risk: string | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          input?: Json
+          result?: Json
+          risk?: string | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      bug_reports: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          message: string
+          page: string | null
+          severity: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message: string
+          page?: string | null
+          severity?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          message?: string
+          page?: string | null
+          severity?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+          user_id: st

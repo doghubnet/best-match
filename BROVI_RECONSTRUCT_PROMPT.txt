@@ -1,0 +1,36 @@
+You are reconstructing Brovi Scan from the original Lovable source reference.
+
+The source is split into chunk files:
+docs/lovable-source/part-001.txt through the final part listed in docs/lovable-source/MANIFEST.json.
+
+First, read docs/lovable-source/MANIFEST.json.
+Then read every part file in order.
+Do not skip parts.
+Do not summarize and stop.
+Reconstruct the real project files from the source chunks, not a small scaffold.
+
+If your environment allows shell commands, reassemble the source reference first:
+cat docs/lovable-source/part-*.txt > docs/lovable-source-extracted.txt
+
+Then inspect the complete file and extract the original app code into proper files:
+package.json, tsconfig, vite config, src files, UI components, routes, Supabase files, pricing page, document scan page, dashboard, auth, and all required app pages.
+
+Rules:
+- Do not create a tiny MVP.
+- Do not leave placeholder components.
+- Do not merge.
+- Do not claim build success unless npm install, lint, typecheck, and build pass.
+- If npm install is blocked by registry 403, report that as environment blocker and keep code ready for local/Vercel verification.
+
+After reconstruction, run:
+npm install
+npm run lint
+npm run typecheck
+npm run build
+
+Return:
+- source chunks read: yes/no
+- files reconstructed
+- install/lint/typecheck/build status
+- Draft PR: yes/no
+- Merge: yes/no

@@ -1,0 +1,906 @@
+ gap-2">
+          <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={submit} disabled={busy}>{busy ? "Sending…" : "Submit"}</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { CalendarClock, ArrowLeft } from "lucide-react";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+
+export const Route = createFileRoute("/app/tasks")({
+  head: () => ({ meta: [{ title: "Task planner — Brovi Scan" }] }),
+  component: TasksPage,
+});
+
+function TasksPage() {
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-semibold flex items-center gap-2"><CalendarClock className="h-5 w-5 text-primary" /> Task planner</h1>
+        <p className="text-sm text-muted-foreground">Plan appointments, documents, applications, deadlines, and travel preparation steps.</p>
+      </header>
+      <div className="rounded-xl border bg-card p-6 text-center space-y-3">
+        <p className="font-medium">Task planner is coming next.</p>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          You'll soon be able to create reminders for VFS, embassy, MOFA, document translation,
+          flight reservations, and more — with daily, weekly, monthly, and yearly progress analytics.
+        </p>
+        <div className="flex justify-center gap-2 pt-2">
+          <Button asChild variant="outline"><Link to="/app"><ArrowLeft className="h-4 w-4 mr-1" /> Back to dashboard</Link></Button>
+        </div>
+      </div>
+      <DisclaimerBanner compact />
+    </div>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { AppShell } from "@/components/AppShell";
+
+export const Route = createFileRoute("/app")({
+  component: AppShell,
+});import { createFileRoute, Link } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/forgot-password")({
+  head: () => ({ meta: [{ title: "Reset your password — Brovi Scan" }] }),
+  component: ForgotPasswordPage,
+});
+
+function ForgotPasswordPage() {
+  const [email, setEmail] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    setSent(true);
+    toast.success("Check your inbox for the reset link.");
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <TopNav />
+      <div className="flex-1 grid place-items-center px-4 py-10">
+        <form onSubmit={onSubmit} className="w-full max-w-sm rounded-xl border bg-card p-6 space-y-4">
+          <div>
+            <h1 className="text-xl font-semibold">Reset your password</h1>
+            <p className="text-sm text-muted-foreground">Enter your email and we'll send a reset link.</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <Button type="submit" className="w-full" disabled={busy || sent}>{sent ? "Email sent" : busy ? "Sending…" : "Send reset link"}</Button>
+          <p className="text-sm text-center text-muted-foreground">
+            Remembered it? <Link to="/login" className="text-primary hover:underline">Back to sign in</Link>
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+import { Button } from "@/components/ui/button";
+import { ScoreRing, ScoreCard } from "@/components/Score";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import {
+  GraduationCap, FileCheck2, Wallet, MessageSquareQuote, FileBarChart, Users2,
+  ShieldCheck, Sparkles, CheckCircle2, ArrowRight
+} from "lucide-react";
+
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Brovi Scan — Check your travel readiness before you submit" },
+      { name: "description", content: "Brovi Scan helps travelers review documents, financial preparation, interview answers, and overall readiness for visas, study, business, family visits, tourism, and other international travel needs." },
+    ],
+  }),
+  component: Index,
+});
+
+const features = [
+  { icon: GraduationCap, title: "Program & Route Match", desc: "Check country, route, program or trip, and overall application fit." },
+  { icon: FileCheck2, title: "Document Scan", desc: "Review readiness across passports, invitations, supporting letters, and more." },
+  { icon: Wallet, title: "Financial Readiness Scan", desc: "Safe financial preparation checks — never asks for bank logins or passwords." },
+  { icon: MessageSquareQuote, title: "Interview Practice", desc: "Practice truthful interview answers for visa, embassy, and border questions." },
+  { icon: FileBarChart, title: "Final Readiness Report", desc: "Combined score and step-by-step action plan for travelers." },
+  { icon: Users2, title: "Consultant Review Request", desc: "Send your preparation to a human reviewer when you're ready." },
+];
+
+function Index() {
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <TopNav />
+
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 brovi-gradient opacity-[0.06] pointer-events-none" />
+        <div className="container mx-auto px-4 py-16 lg:py-24 grid lg:grid-cols-2 gap-10 items-center">
+          <div className="brovi-fade-up">
+            <div className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-secondary text-muted-foreground mb-5">
+              <Sparkles className="h-3 w-3" /> Travel readiness, made clear
+            </div>
+            <h1 className="text-4xl lg:text-5xl font-semibold tracking-tight">
+              Check your travel readiness before you submit.
+            </h1>
+            <p className="mt-4 text-base lg:text-lg text-muted-foreground max-w-xl">
+              Brovi Scan helps travelers review documents, financial preparation, interview answers, and overall readiness for visas, study, business, family visits, tourism, and other international travel needs.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild size="lg"><Link to="/app/program-match">Start Free Scan <ArrowRight className="h-4 w-4 ml-1" /></Link></Button>
+              <Button asChild size="lg" variant="secondary"><Link to="/app/interview">Practice Interview</Link></Button>
+              <Button asChild size="lg" variant="outline"><Link to="/app/report" search={{ sample: "1" } as never}>View Sample Report</Link></Button>
+            </div>
+            <p className="mt-4 text-xs text-muted-foreground">No credit card required. Upload only non-sensitive documents.</p>
+          </div>
+
+          {/* Dashboard preview */}
+          <div className="rounded-2xl border bg-card p-5 shadow-sm brovi-fade-up">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Readiness preview</p>
+                <h3 className="font-semibold">Aisha — MSc in Italy</h3>
+              </div>
+              <ScoreRing value={78} label="Overall" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <MiniScore label="Program" v={82} />
+              <MiniScore label="Documents" v={71} />
+              <MiniScore label="Financial" v={74} />
+              <MiniScore label="Interview" v={85} />
+            </div>
+            <div className="mt-4 rounded-lg bg-secondary/60 p-3 text-sm">
+              <p className="font-medium mb-1">Action plan</p>
+              <ul className="text-muted-foreground space-y-1">
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-success mt-0.5" /> Translate transcripts (IT)</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-success mt-0.5" /> Add sponsor employment proof</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-success mt-0.5" /> Practice 5 more interview questions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What we check */}
+      <Section title="What Brovi Scan checks" subtitle="Five focused scans, one clear readiness picture.">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {features.map((f) => (
+            <div key={f.title} className="rounded-xl border bg-card p-5 hover:shadow-md transition-shadow brovi-fade-up">
+              <div className="h-9 w-9 rounded-lg grid place-items-center brovi-gradient text-white mb-3">
+                <f.icon className="h-4 w-4" />
+              </div>
+              <h3 className="font-semibold">{f.title}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* How it works */}
+      <Section title="How Brovi Scan works" subtitle="A simple, transparent flow.">
+        <ol className="grid md:grid-cols-4 gap-4">
+          {["Fill your profile","Run your scans","Get scores and gaps","Fix and re-scan"].map((s, i) => (
+            <li key={s} className="rounded-xl border bg-card p-5">
+              <div className="text-xs text-muted-foreground">Step {i + 1}</div>
+              <p className="font-medium mt-1">{s}</p>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      <Section title="Why students use Brovi Scan">
+        <div className="grid md:grid-cols-3 gap-4">
+          {[
+            ["Free first","Run your first scan and report at no cost."],
+            ["Truth-based","No fake documents, no shortcuts. We help you tell your real story well."],
+            ["Clear next steps","Each scan returns an action plan, not just a score."],
+          ].map(([t, d]) => (
+            <div key={t} className="rounded-xl border bg-card p-5">
+              <h3 className="font-semibold">{t}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{d}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Privacy and safety">
+        <div className="rounded-xl border bg-card p-6 flex items-start gap-4">
+          <ShieldCheck className="h-6 w-6 text-success mt-0.5" />
+          <div className="text-sm text-muted-foreground">
+            We never ask for bank passwords, card numbers, CVV, or online banking logins. Your results are saved securely when signed in. See our <Link to="/privacy" className="text-primary underline-offset-2 hover:underline">Privacy</Link> and <Link to="/terms" className="text-primary underline-offset-2 hover:underline">Terms</Link>.
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Sample readiness report">
+        <div className="rounded-xl border bg-card p-6 grid md:grid-cols-[auto_1fr] items-center gap-6">
+          <ScoreRing value={74} />
+          <div className="space-y-3">
+            <p className="font-medium">Moderate readiness — improvements recommended before submission.</p>
+            <p className="text-sm text-muted-foreground">Strong English score and clear career goal. Documents need 2 translations. Financial source-of-funds needs more detail.</p>
+            <Button asChild variant="outline" size="sm"><Link to="/app/report" search={{ sample: "1" } as never}>View full sample</Link></Button>
+          </div>
+        </div>
+      </Section>
+
+      {/* Final CTA */}
+      <section className="container mx-auto px-4 pb-20">
+        <div className="rounded-2xl brovi-gradient text-white p-8 lg:p-12 text-center">
+          <h2 className="text-2xl lg:text-3xl font-semibold">Run your first free scan in minutes.</h2>
+          <p className="mt-2 opacity-90">Find your gaps, fix them early, and submit with confidence.</p>
+          <div className="mt-5 flex justify-center gap-3 flex-wrap">
+            <Button asChild size="lg" variant="secondary"><Link to="/app/program-match">Start Free Scan</Link></Button>
+            <Button asChild size="lg" variant="outline" className="bg-transparent text-white border-white/40 hover:bg-white/10 hover:text-white"><Link to="/app/consultant">Request Consultant Review</Link></Button>
+          </div>
+        </div>
+        <div className="mt-6"><DisclaimerBanner /></div>
+      </section>
+
+      <footer className="border-t py-8 text-sm text-muted-foreground">
+        <div className="container mx-auto px-4 flex flex-wrap justify-between gap-3">
+          <span>© {new Date().getFullYear()} Brovi Scan</span>
+          <div className="flex gap-4">
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+            <Link to="/pricing">Pricing</Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+  return (
+    <section className="container mx-auto px-4 py-12">
+      <div className="mb-6">
+        <h2 className="text-2xl lg:text-3xl font-semibold tracking-tight">{title}</h2>
+        {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function MiniScore({ label, v }: { label: string; v: number }) {
+  return (
+    <div className="rounded-lg border bg-background p-3">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="text-xl font-semibold">{v}<span className="text-xs text-muted-foreground">/100</span></p>
+    </div>
+  );
+}import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/PasswordInput";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
+import { BroviCardLogo, GoogleIcon } from "@/components/BroviLogo";
+
+export const Route = createFileRoute("/login")({
+  head: () => ({ meta: [{ title: "Sign in — Brovi Scan" }] }),
+  component: LoginPage,
+});
+
+function LoginPage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setBusy(false);
+    if (error) {
+      const msg = /email.*not.*confirm|confirm.*email|not\s*confirmed/i.test(error.message)
+        ? "Please confirm your email first. Check your inbox for the confirmation link, then sign in."
+        : error.message;
+      toast.error(msg);
+      return;
+    }
+    toast.success("Signed in");
+    navigate({ to: "/app" });
+  };
+
+  const onGoogle = async () => {
+    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/app" });
+    if (res.error) toast.error(res.error.message ?? "Google sign-in failed");
+  };
+
+  const onMagic = async () => {
+    if (!email) { toast.error("Enter your email first"); return; }
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + "/app" } });
+    if (error) toast.error(error.message); else toast.success("Magic link sent — check your inbox");
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <TopNav />
+      <div className="flex-1 grid place-items-center px-4 py-10">
+        <form className="w-full max-w-sm rounded-xl border bg-card p-6 space-y-4" onSubmit={onSubmit}>
+          <BroviCardLogo />
+          <div className="text-center">
+            <h1 className="text-xl font-semibold">Welcome back</h1>
+            <p className="text-sm text-muted-foreground">Sign in to your Brovi Scan workspace.</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <PasswordInput id="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <Button type="submit" className="w-full" disabled={busy}>{busy ? "Signing in…" : "Continue"}</Button>
+          <Button type="button" variant="outline" className="w-full" onClick={onGoogle}>
+            <GoogleIcon className="mr-2" /> Continue with Google
+          </Button>
+          <Button type="button" variant="ghost" className="w-full" onClick={onMagic}>Email me a magic link</Button>
+          <p className="text-sm text-center text-muted-foreground">
+            <Link to="/forgot-password" className="text-primary hover:underline">Forgot password?</Link>
+          </p>
+          <p className="text-sm text-center text-muted-foreground">
+            New here? <Link to="/register" className="text-primary hover:underline">Create account</Link>
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}import { createFileRoute, Link } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+import { Button } from "@/components/ui/button";
+import { Check, Sparkles } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/pricing")({
+  head: () => ({ meta: [{ title: "Pricing — Brovi Scan" }] }),
+  component: PricingPage,
+});
+
+function PricingPage() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <TopNav />
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <h1 className="text-3xl font-semibold">Free first. Upgrade when you're ready.</h1>
+          <p className="text-muted-foreground mt-2">Run your first scan and report at no cost. No card required.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <Plan
+            title="Free"
+            price="$0"
+            cta={<Button asChild className="w-full"><Link to="/app/program-match">Start Free Scan</Link></Button>}
+            features={[
+              "1 program match scan",
+              "1 document checklist",
+              "1 financial scan",
+              "10 interview practice questions",
+              "1 final readiness report",
+            ]}
+          />
+          <Plan
+            title="Premium"
+            price="Coming soon"
+            highlight
+            cta={<WaitlistButton />}
+            features={[
+              "Unlimited scans & reports",
+              "Country-specific checklists",
+              "Consultant review priority",
+              "Priority support",
+              "Re-scan history & tracking",
+            ]}
+          />
+        </div>
+        <div className="text-center mt-8">
+          <Button asChild variant="outline"><Link to="/app/consultant">Request Consultant Review</Link></Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Plan({ title, price, features, cta, highlight }: { title: string; price: string; features: string[]; cta: React.ReactNode; highlight?: boolean }) {
+  return (
+    <div className={`rounded-2xl border bg-card p-6 ${highlight ? "ring-2 ring-primary" : ""}`}>
+      {highlight && <div className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary mb-3"><Sparkles className="h-3 w-3" />Most popular</div>}
+      <h3 className="font-semibold text-lg">{title}</h3>
+      <p className="text-3xl font-semibold mt-2">{price}</p>
+      <ul className="mt-4 space-y-2 text-sm">
+        {features.map((f) => (
+          <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-success mt-0.5" />{f}</li>
+        ))}
+      </ul>
+      <div className="mt-6">{cta}</div>
+    </div>
+  );
+}
+
+function WaitlistButton() {
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild><Button className="w-full" variant="secondary">Join Waitlist</Button></DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>Join the Premium waitlist</DialogTitle></DialogHeader>
+        <Input placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <DialogFooter>
+          <Button onClick={() => { toast.success("You're on the waitlist"); setOpen(false); }}>Join</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+
+export const Route = createFileRoute("/privacy")({
+  head: () => ({ meta: [{ title: "Privacy — Brovi Scan" }] }),
+  component: PrivacyPage,
+});
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-8">
+      <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+      <div className="text-muted-foreground mt-2 text-sm leading-relaxed space-y-2">{children}</div>
+    </section>
+  );
+}
+
+function PrivacyPage() {
+  return (
+    <div className="min-h-screen">
+      <TopNav />
+      <article className="container mx-auto px-4 py-10 max-w-3xl text-foreground">
+        <h1 className="text-3xl font-semibold">Privacy Policy</h1>
+        <p className="text-muted-foreground mt-2 text-sm">Last updated: {new Date().getFullYear()}</p>
+
+        <Section title="1. Introduction">
+          <p>Brovi Scan provides AI-assisted travel and visa readiness review. This policy explains what information we collect, how we use it, and the choices you have.</p>
+        </Section>
+        <Section title="2. Information we collect">
+          <p>We collect information you provide directly through accounts, forms, document uploads, and chat with the Brovi AI assistant, plus basic technical data needed to operate the service.</p>
+        </Section>
+        <Section title="3. Account information">
+          <p>When you create an account, we store your name, email, country of origin, target country, travel purpose, and authentication metadata.</p>
+        </Section>
+        <Section title="4. Profile and travel readiness information">
+          <p>You may enter additional readiness details such as program, route, sponsor relation, English level, and country-specific notes to improve your scan results.</p>
+        </Section>
+        <Section title="5. Documents and uploaded files">
+          <p>If you upload files, they are stored in your private storage area and used to generate readiness feedback. Do not upload fake, stolen, altered, or unauthorized documents.</p>
+        </Section>
+        <Section title="6. Financial readiness information">
+          <p>You may enter bank statement summaries, sponsor information, and source of funds notes. <strong>Never upload bank passwords, card numbers, CVV, online banking login details, or private access codes.</strong></p>
+        </Section>
+        <Section title="7. Interview answers and AI chat messages">
+          <p>Interview answers and Brovi AI assistant chats are processed to generate feedback. Chat history for signed-in users may be saved to your account so you can resume conversations.</p>
+        </Section>
+        <Section title="8. Consultant review requests">
+          <p>If you submit a consultant request, your contact details and case summary are saved so a reviewer can follow up using the details you provide.</p>
+        </Section>
+        <Section title="9. Bug reports and support messages">
+          <p>Issue reports include the message you write, the page where it happened, and optionally your email for follow-up.</p>
+        </Section>
+        <Section title="10. How we use information">
+          <p>We use information to provide and improve the service, generate AI-assisted readiness feedback, respond to your requests, and protect the service against abuse.</p>
+        </Section>
+        <Section title="11. AI processing and third-party providers">
+          <p>AI scans and chat run through backend functions that may call providers such as Google Gemini and OpenRouter. Those providers process your input under their own policies.</p>
+        </Section>
+        <Section title="12. Storage and database">
+          <p>Account, scan, and document data are stored in our managed cloud database and private storage with row-level access controls so each user can only see their own data.</p>
+        </Section>
+        <Section title="13. Data retention">
+          <p>We keep your data while your account is active. You can delete saved scans, request data export, or request account deletion at any time.</p>
+        </Section>
+        <Section title="14. Data controls">
+          <p>From Settings you can export your data, clear local cache, and request deletion of saved scans.</p>
+        </Section>
+        <Section title="15. User rights">
+          <p>You may request access, correction, deletion, or export of your personal data, subject to applicable law.</p>
+        </Section>
+        <Section title="16. Security">
+          <p>We use industry-standard authentication, encrypted transport, and row-level security policies. No service can guarantee absolute security.</p>
+        </Section>
+        <Section title="17. Children and minors">
+          <p>Brovi Scan is not intended for users under 16 without verifiable parental or guardian involvement.</p>
+        </Section>
+        <Section title="18. International users">
+          <p>Brovi Scan is offered globally. By using the service you consent to your data being processed by our providers in the regions where they operate.</p>
+        </Section>
+        <Section title="19. Changes to this policy">
+          <p>We may update this policy over time. Significant changes will be reflected in the date above.</p>
+        </Section>
+        <Section title="20. Contact">
+          <p>For privacy questions, contact the project owner through the support channel listed in Settings → About.</p>
+        </Section>
+
+        <p className="mt-10 text-xs text-muted-foreground">
+          Brovi Scan provides preparation guidance only. Final decisions are made by official universities, embassies, consulates, immigration offices, visa centers, border officers, airlines, scholarship bodies, and other relevant authorities.
+        </p>
+      </article>
+    </div>
+  );
+}import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/PasswordInput";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
+import { TRAVEL_PURPOSES } from "@/lib/options";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BroviCardLogo, GoogleIcon } from "@/components/BroviLogo";
+
+export const Route = createFileRoute("/register")({
+  head: () => ({ meta: [{ title: "Create account — Brovi Scan" }] }),
+  component: RegisterPage,
+});
+
+function RegisterPage() {
+  const navigate = useNavigate();
+  const [consent, setConsent] = useState(false);
+  const [form, setForm] = useState({ fullName: "", email: "", password: "", origin: "", target: "", purpose: "" });
+  const [busy, setBusy] = useState(false);
+  const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!consent) { toast.error("Please acknowledge the disclaimer to continue."); return; }
+    setBusy(true);
+    const { data, error } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        emailRedirectTo: window.location.origin + "/app",
+        data: { full_name: form.fullName, country_of_origin: form.origin, target_country: form.target, travel_purpose: form.purpose },
+      },
+    });
+    if (!error && data.user) {
+      await supabase.from("profiles").upsert({
+        id: data.user.id, full_name: form.fullName, email: form.email,
+        country_of_origin: form.origin, target_country: form.target, travel_purpose: form.purpose,
+      });
+    }
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    if (data.session) {
+      toast.success("Account created");
+      navigate({ to: "/app" });
+    } else {
+      toast.success("Check your email to confirm your account.");
+    }
+  };
+
+  const onGoogle = async () => {
+    const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/app" });
+    if (res.error) toast.error(res.error.message ?? "Google sign-in failed");
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <TopNav />
+      <div className="flex-1 grid place-items-center px-4 py-10">
+        <form className="w-full max-w-md rounded-xl border bg-card p-6 space-y-4" onSubmit={onSubmit}>
+          <BroviCardLogo />
+          <div className="text-center">
+            <h1 className="text-xl font-semibold">Create your account</h1>
+            <p className="text-sm text-muted-foreground">Start your Brovi Scan travel readiness workspace.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Field label="Full name"><Input required value={form.fullName} onChange={(e) => set("fullName", e.target.value)} /></Field>
+            <Field label="Email"><Input type="email" required value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
+            <Field label="Password"><PasswordInput required minLength={8} value={form.password} onChange={(e) => set("password", e.target.value)} /></Field>
+            <Field label="Country of origin"><Input value={form.origin} onChange={(e) => set("origin", e.target.value)} /></Field>
+            <Field label="Target country"><Input value={form.target} onChange={(e) => set("target", e.target.value)} /></Field>
+            <Field label="Travel purpose">
+              <Select value={form.purpose} onValueChange={(v) => set("purpose", v)}>
+                <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                <SelectContent>{TRAVEL_PURPOSES.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+              </Select>
+            </Field>
+          </div>
+          <label className="flex items-start gap-2 text-sm">
+            <Checkbox checked={consent} onCheckedChange={(c) => setConsent(!!c)} />
+            <span>I understand Brovi Scan provides preparation guidance only and does not guarantee official decisions.</span>
+          </label>
+          <Button type="submit" className="w-full" disabled={busy}>{busy ? "Creating…" : "Create account"}</Button>
+          <Button type="button" variant="outline" className="w-full" onClick={onGoogle}>
+            <GoogleIcon className="mr-2" /> Continue with Google
+          </Button>
+          <p className="text-xs text-muted-foreground text-center">
+            After creating your account, check your email and confirm before signing in.
+          </p>
+          <p className="text-sm text-center text-muted-foreground">
+            Already have an account? <Link to="/login" className="text-primary hover:underline">Sign in</Link>
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      {children}
+    </div>
+  );
+}import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/PasswordInput";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/reset-password")({
+  head: () => ({ meta: [{ title: "Set a new password — Brovi Scan" }] }),
+  component: ResetPasswordPage,
+});
+
+function ResetPasswordPage() {
+  const navigate = useNavigate();
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pw.length < 8) { toast.error("Password must be at least 8 characters."); return; }
+    if (pw !== pw2) { toast.error("Passwords do not match."); return; }
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password: pw });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Password updated. You're signed in.");
+    navigate({ to: "/app" });
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <TopNav />
+      <div className="flex-1 grid place-items-center px-4 py-10">
+        <form onSubmit={onSubmit} className="w-full max-w-sm rounded-xl border bg-card p-6 space-y-4">
+          <div>
+            <h1 className="text-xl font-semibold">Set a new password</h1>
+            <p className="text-sm text-muted-foreground">Choose a password you don't use anywhere else.</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="pw">New password</Label>
+            <PasswordInput id="pw" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="pw2">Confirm password</Label>
+            <PasswordInput id="pw2" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)} />
+          </div>
+          <Button type="submit" className="w-full" disabled={busy}>{busy ? "Updating…" : "Update password"}</Button>
+        </form>
+      </div>
+    </div>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { TopNav } from "@/components/TopNav";
+
+export const Route = createFileRoute("/terms")({
+  head: () => ({ meta: [{ title: "Terms — Brovi Scan" }] }),
+  component: TermsPage,
+});
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-8">
+      <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+      <div className="text-muted-foreground mt-2 text-sm leading-relaxed space-y-2">{children}</div>
+    </section>
+  );
+}
+
+function TermsPage() {
+  return (
+    <div className="min-h-screen">
+      <TopNav />
+      <article className="container mx-auto px-4 py-10 max-w-3xl text-foreground">
+        <h1 className="text-3xl font-semibold">Terms of Service</h1>
+        <p className="text-muted-foreground mt-2 text-sm">Last updated: {new Date().getFullYear()}</p>
+
+        <Section title="1. Acceptance of terms"><p>By creating an account or using Brovi Scan you agree to these terms.</p></Section>
+        <Section title="2. What Brovi Scan does"><p>Brovi Scan provides AI-assisted preparation review for travel and visa applications, including documents, finances, interview answers, and overall readiness.</p></Section>
+        <Section title="3. Preparation guidance only"><p>Brovi Scan provides preparation guidance only and does not constitute legal, immigration, financial, medical, or visa advice.</p></Section>
+        <Section title="4. No official decision guarantee"><p>Brovi Scan does not guarantee visas, admissions, scholarships, employment, travel approval, border entry, embassy decisions, airline boarding, appointment approval, or any official outcome.</p></Section>
+        <Section title="5. User responsibility"><p>You are responsible for verifying official requirements through embassies, consulates, universities, employers, and other authorities.</p></Section>
+        <Section title="6. Truthful information requirement"><p>You must provide truthful information. Refusal history and other facts should be disclosed honestly.</p></Section>
+        <Section title="7. No fake documents"><p>You must not upload fake, stolen, altered, or unauthorized documents.</p></Section>
+        <Section title="8. No illegal advice"><p>Brovi Scan does not assist with circumventing immigration, visa, or border law.</p></Section>
+        <Section title="9. Document upload rules"><p>Only upload documents you have the right to share, related to your own preparation.</p></Section>
+        <Section title="10. Financial information safety"><p><strong>Never upload bank passwords, card numbers, CVV, online banking login details, or private access codes.</strong></p></Section>
+        <Section title="11. AI limitations"><p>AI output may be incomplete, outdated, or incorrect. Do not treat AI output as final authority.</p></Section>
+        <Section title="12. Consultant review limitation"><p>Consultant reviewers offered through Brovi Scan are independent of official authorities and do not guarantee outcomes.</p></Section>
+        <Section title="13. Account security"><p>You are responsible for protecting your account credentials and reporting suspected unauthorized access.</p></Section>
+        <Section title="14. Prohibited use"><p>Do not use Brovi Scan to deceive officials, harass others, or violate applicable law.</p></Section>
+        <Section title="15. Data and privacy"><p>Use of Brovi Scan is also subject to our Privacy Policy.</p></Section>
+        <Section title="16. Payments and pricing"><p>Some features may require payment in the future. Pricing will be presented before any charge.</p></Section>
+        <Section title="17. Service availability"><p>The service is provided on an as-available basis and may change, pause, or end with reasonable notice.</p></Section>
+        <Section title="18. Limitation of liability"><p>To the maximum extent permitted by law, Brovi Scan is not liable for indirect, incidental, or consequential damages arising from use of the service.</p></Section>
+        <Section title="19. Changes to terms"><p>We may update these terms. Continued use after changes means you accept the updated terms.</p></Section>
+        <Section title="20. Contact"><p>For questions about these terms, contact the project owner through the support channel listed in Settings → About.</p></Section>
+
+        <p className="mt-10 text-xs text-muted-foreground">
+          Brovi Scan provides preparation guidance only. Final decisions are made by official universities, embassies, consulates, immigration offices, visa centers, border officers, airlines, scholarship bodies, and other relevant authorities.
+        </p>
+      </article>
+    </div>
+  );
+}import { QueryClient } from "@tanstack/react-query";
+import { createRouter } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+
+export const getRouter = () => {
+  const queryClient = new QueryClient();
+
+  const router = createRouter({
+    routeTree,
+    context: { queryClient },
+    scrollRestoration: true,
+    defaultPreloadStaleTime: 0,
+  });
+
+  return router;
+};/* eslint-disable */
+
+// @ts-nocheck
+
+// noinspection JSUnusedGlobalSymbols
+
+// This file was automatically generated by TanStack Router.
+// You should NOT make any changes in this file as it will be overwritten.
+// Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
+
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppTasksRouteImport } from './routes/app.tasks'
+import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as AppReportRouteImport } from './routes/app.report'
+import { Route as AppProgramMatchRouteImport } from './routes/app.program-match'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppInterviewRouteImport } from './routes/app.interview'
+import { Route as AppDocumentsRouteImport } from './routes/app.documents'
+import { Route as AppConsultantRouteImport } from './routes/app.consultant'
+import { Route as AppBankRouteImport } from './routes/app.bank'
+import { Route as AppAdminRouteImport } from './routes/app.admin'
+
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTasksRoute = AppTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportRoute = AppReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProgramMatchRoute = AppProgramMatchRouteImport.update({
+  id: '/program-match',
+  path: '/program-match',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInterviewRoute = AppInterviewRouteImport.update({
+  id: '/interview',
+  path: '/interview',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocumentsRoute = AppDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConsultantRoute = AppConsultantRouteImport.update({
+  id: '/consultant',
+  path: '/consultant',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBankRoute = AppBankRouteImport.update({
+  id: '/bank',
+  

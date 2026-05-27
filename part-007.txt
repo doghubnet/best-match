@@ -1,0 +1,835 @@
+.label}</span><span className="font-medium">{b.value}%</span></div>
+            <div className="h-2 rounded-full bg-secondary overflow-hidden">
+              <div className="h-full bg-primary transition-all" style={{ width: `${b.value}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-muted-foreground mt-3">More analytics arrive as you complete scans and tasks.</p>
+    </div>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScoreRing, RiskBadge, ScoreBarChart } from "@/components/Score";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import { scoreInterview, type InterviewInput } from "@/lib/scoring";
+import { loadJSON, saveJSON, STORAGE_KEYS } from "@/lib/storage";
+import { useState } from "react";
+import { toast } from "sonner";
+import { invokeAI } from "@/lib/ai";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { Sparkles, Loader2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+
+const QUESTIONS = [
+  "Why did you choose this country?",
+  "Why did you choose this university?",
+  "Why did you choose this program?",
+  "Who is sponsoring your studies?",
+  "What does your sponsor do?",
+  "Why not study in your home country?",
+  "What will you do after graduation?",
+  "How will this program help your career?",
+  "Do you have relatives abroad?",
+  "Why should the embassy believe you will return?",
+  "Explain your education gap.",
+  "Explain your low grade.",
+  "Explain your bank statement.",
+  "What is your study plan?",
+  "What do you know about the city?",
+  "How much is your tuition?",
+  "How much is your living cost?",
+  "What documents did you prepare?",
+  "What will you do if your visa is refused?",
+  "Why should your application be approved?",
+];
+
+export const Route = createFileRoute("/app/interview")({
+  head: () => ({ meta: [{ title: "Interview Practice — Brovi Scan" }] }),
+  component: InterviewPage,
+});
+
+function InterviewPage() {
+  const initial = loadJSON<InterviewInput & { score?: number; result?: ReturnType<typeof scoreInterview> }>(STORAGE_KEYS.interview, { mode: "Normal", question: QUESTIONS[0], answer: "" });
+  const [data, setData] = useState<InterviewInput>({ mode: initial.mode ?? "Normal", question: initial.question ?? QUESTIONS[0], answer: initial.answer ?? "", targetCountry: initial.targetCountry, visaType: initial.visaType, program: initial.program, university: initial.university, sponsorRelation: initial.sponsorRelation });
+  const [result, setResult] = useState(initial.result ?? null);
+  const [aiResult, setAiResult] = useState<any | null>(null);
+  const [aiBusy, setAiBusy] = useState(false);
+  const { user } = useAuth();
+  const set = <K extends keyof InterviewInput>(k: K, v: InterviewInput[K]) => setData((d) => ({ ...d, [k]: v }));
+
+  const runAI = async () => {
+    if (!data.answer || data.answer.trim().length < 5) { toast.error("Please write an answer first."); return; }
+    setAiBusy(true);
+    const res = await invokeAI<any>("analyze-interview-answer", { ...data });
+    setAiBusy(false);
+    if (!res.ok) { toast.error(res.message ?? "AI review unavailable."); return; }
+    setAiResult(res.result);
+    if (user) await supabase.from("interview_sessions").insert({ user_id: user.id, input: data as any, result: res.result as any, score: res.result?.score ?? null, risk: res.result?.risk ?? null });
+    else toast.info("Sign in to save your AI result.");
+    toast.success("AI review complete");
+  };
+
+  return (
+    <form
+      className="space-y-6"
+      onSubmit={(e) => {
+        e.preventDefault();
+        const r = scoreInterview(data);
+        setResult(r);
+        saveJSON(STORAGE_KEYS.interview, { ...data, score: r.score, result: r });
+        toast.success(`Answer score: ${r.score}/100`);
+      }}
+    >
+      <header>
+        <h1 className="text-2xl font-semibold">Interview Practice</h1>
+        <p className="text-sm text-muted-foreground">Practice truthful answers for visa, embassy, consulate, border, university, and other travel interviews. Use placeholders instead of inventing personal facts.</p>
+      </header>
+      <DisclaimerBanner compact />
+
+      <div className="rounded-xl border bg-card p-5 grid sm:grid-cols-2 gap-4">
+        <Field label="Mode">
+          <Select value={data.mode} onValueChange={(v) => set("mode", v as InterviewInput["mode"])}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {["Beginner","Normal","Strict"].map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label="Target country"><Input value={data.targetCountry ?? ""} onChange={(e) => set("targetCountry", e.target.value)} /></Field>
+        <Field label="Visa type"><Input value={data.visaType ?? ""} onChange={(e) => set("visaType", e.target.value)} placeholder="Student visa" /></Field>
+        <Field label="Program name"><Input value={data.program ?? ""} onChange={(e) => set("program", e.target.value)} /></Field>
+        <Field label="University name"><Input value={data.university ?? ""} onChange={(e) => set("university", e.target.value)} /></Field>
+        <Field label="Sponsor relation"><Input value={data.sponsorRelation ?? ""} onChange={(e) => set("sponsorRelation", e.target.value)} /></Field>
+        <Field label="Question" full>
+          <Select value={data.question} onValueChange={(v) => set("question", v)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>{QUESTIONS.map((q) => <SelectItem key={q} value={q}>{q}</SelectItem>)}</SelectContent>
+          </Select>
+        </Field>
+        <Field label="Your answer" full>
+          <Textarea rows={6} value={data.answer} onChange={(e) => set("answer", e.target.value)} placeholder="Use placeholders like [relation], [job/business], [amount] if you want to test structure without personal facts." />
+        </Field>
+        <div className="sm:col-span-2"><Button type="submit">Score my answer</Button></div>
+      </div>
+
+      {result && (
+        <div className="rounded-xl border bg-card p-5 grid md:grid-cols-[auto_1fr] gap-5 brovi-fade-up">
+          <div className="flex flex-col items-center gap-2">
+            <ScoreRing value={result.score} />
+            <RiskBadge score={result.score} />
+            <Button type="button" size="sm" variant="outline" onClick={runAI} disabled={aiBusy} className="mt-2">
+              {aiBusy ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1" />}
+              {aiResult ? "Re-run AI review" : "Run AI interview review"}
+            </Button>
+          </div>
+          <div className="space-y-4">
+            <ScoreBarChart data={[
+              { name: "Clarity", score: result.clarity },
+              { name: "Specificity", score: result.specificity },
+              { name: "Consistency", score: result.consistency },
+              { name: "Financial explanation", score: result.financial },
+              { name: "Return plan", score: result.returnPlan },
+            ]} />
+            <Block title="Strong points" items={result.strong} tone="success" />
+            <Block title="Weak points" items={result.weak} tone="risk" />
+            <div>
+              <h3 className="font-medium">Better answer structure</h3>
+              <p className="mt-1 text-sm bg-secondary/60 rounded-md p-3">{result.betterStructure}</p>
+            </div>
+            <Block title="Next questions to practice" items={result.nextQuestions} />
+            {aiResult && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-2 text-sm">
+                <p className="font-medium flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> AI-assisted review {aiResult.score != null && <span className="text-muted-foreground">· {aiResult.score}/100</span>}</p>
+                <Block title="AI strong points" items={aiResult.strong ?? []} tone="success" />
+                <Block title="AI weak points" items={aiResult.weak ?? []} tone="risk" />
+                {aiResult.betterStructure && (
+                  <div><p className="font-medium">AI suggested structure</p><p className="mt-1 bg-secondary/60 rounded-md p-3">{aiResult.betterStructure}</p></div>
+                )}
+                <Block title="AI follow-up questions" items={aiResult.nextQuestions ?? []} />
+              </div>
+            )}
+            <div>
+              <Button asChild type="button" size="sm" variant="secondary">
+                <Link to="/app" hash="brovi-assistant">Continue with AI coach</Link>
+              </Button>
+            </div>
+            <DisclaimerBanner />
+          </div>
+        </div>
+      )}
+    </form>
+  );
+}
+
+function Field({ label, children, full }: { label: string; children: React.ReactNode; full?: boolean }) {
+  return <div className={`space-y-1.5 ${full ? "sm:col-span-2" : ""}`}><Label>{label}</Label>{children}</div>;
+}
+function Block({ title, items, tone }: { title: string; items: string[]; tone?: "success" | "risk" }) {
+  if (!items.length) return null;
+  const dot = tone === "risk" ? "bg-risk" : tone === "success" ? "bg-success" : "bg-primary";
+  return (
+    <div>
+      <h3 className="font-medium mb-1">{title}</h3>
+      <ul className="space-y-1 text-sm text-muted-foreground">
+        {items.map((s, i) => <li key={s + i} className="flex items-start gap-2"><span className={`h-1.5 w-1.5 rounded-full mt-2 ${dot}`} />{s}</li>)}
+      </ul>
+    </div>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { loadJSON, saveJSON, STORAGE_KEYS } from "@/lib/storage";
+import { completenessPct } from "@/lib/scoring";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Progress } from "@/components/ui/progress";
+
+export const Route = createFileRoute("/app/profile")({
+  head: () => ({ meta: [{ title: "Profile — Brovi Scan" }] }),
+  component: ProfilePage,
+});
+
+const FIELDS: { key: string; label: string; type?: string; long?: boolean }[] = [
+  { key: "fullName", label: "Full name" },
+  { key: "phone", label: "Phone (optional)" },
+  { key: "originCountry", label: "Country of origin" },
+  { key: "residenceCountry", label: "Current residence country" },
+  { key: "targetCountry", label: "Target country" },
+  { key: "targetVisaType", label: "Target visa type" },
+  { key: "educationLevel", label: "Education level" },
+  { key: "fieldOfStudy", label: "Field of study" },
+  { key: "gpa", label: "GPA or average mark" },
+  { key: "englishLevel", label: "English level" },
+  { key: "intake", label: "Preferred intake" },
+  { key: "degreeLevel", label: "Preferred degree level" },
+  { key: "budget", label: "Budget range" },
+  { key: "scholarship", label: "Scholarship need" },
+  { key: "workPreference", label: "Work preference" },
+  { key: "careerGoal", label: "Career goal", long: true },
+  { key: "availableDocuments", label: "Available documents", long: true },
+  { key: "sponsorRelation", label: "Sponsor relation" },
+  { key: "notes", label: "Notes", long: true },
+];
+
+function ProfilePage() {
+  const [data, setData] = useState<Record<string, string>>(() => loadJSON(STORAGE_KEYS.profile, {} as Record<string, string>));
+  const pct = completenessPct(data, FIELDS.map((f) => f.key));
+  const set = (k: string, v: string) => setData((d) => ({ ...d, [k]: v }));
+  return (
+    <form
+      className="space-y-6"
+      onSubmit={(e) => { e.preventDefault(); saveJSON(STORAGE_KEYS.profile, data); toast.success("Profile saved"); }}
+    >
+      <div className="rounded-xl border bg-card p-5">
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="text-2xl font-semibold">Your profile</h1>
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground">Completeness</p>
+            <p className="font-semibold">{pct}%</p>
+          </div>
+        </div>
+        <Progress value={pct} className="mt-3" />
+      </div>
+      <div className="rounded-xl border bg-card p-5 grid sm:grid-cols-2 gap-4">
+        {FIELDS.map((f) => (
+          <div key={f.key} className={f.long ? "sm:col-span-2 space-y-1.5" : "space-y-1.5"}>
+            <Label>{f.label}</Label>
+            {f.long ? (
+              <Textarea value={data[f.key] ?? ""} onChange={(e) => set(f.key, e.target.value)} rows={3} />
+            ) : (
+              <Input value={data[f.key] ?? ""} onChange={(e) => set(f.key, e.target.value)} />
+            )}
+          </div>
+        ))}
+      </div>
+      <Button type="submit">Save profile</Button>
+    </form>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { loadJSON, saveJSON, STORAGE_KEYS } from "@/lib/storage";
+import { scoreProgram, type ProgramScanInput } from "@/lib/scoring";
+import { useState } from "react";
+import { toast } from "sonner";
+import { ScoreRing, RiskBadge } from "@/components/Score";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ENGLISH_LEVELS } from "@/lib/options";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { invokeAI } from "@/lib/ai";
+import { Sparkles, Loader2 } from "lucide-react";
+
+export const Route = createFileRoute("/app/program-match")({
+  head: () => ({ meta: [{ title: "Program Match Scan — Brovi Scan" }] }),
+  component: ProgramMatchPage,
+});
+
+function ProgramMatchPage() {
+  const [data, setData] = useState<ProgramScanInput>(() => loadJSON(STORAGE_KEYS.program, {} as ProgramScanInput & { score?: number; result?: ReturnType<typeof scoreProgram> }));
+  const [result, setResult] = useState<ReturnType<typeof scoreProgram> | null>((data as any).result ?? null);
+  const [aiResult, setAiResult] = useState<any | null>((data as any).aiResult ?? null);
+  const [aiBusy, setAiBusy] = useState(false);
+  const set = <K extends keyof ProgramScanInput>(k: K, v: ProgramScanInput[K]) => setData((d) => ({ ...d, [k]: v }));
+  const { user } = useAuth();
+
+  const refusalRequiredMissing =
+    data.priorRefusal === "yes" &&
+    (!data.refusalCountry || !data.refusalDate || !data.refusalVisaType || !data.refusalReason || !data.refusalChanges);
+
+  const runAI = async () => {
+    setAiBusy(true);
+    const res = await invokeAI<any>("analyze-program-match", { ...data });
+    setAiBusy(false);
+    if (!res.ok) { toast.error(res.message ?? "AI review unavailable."); return; }
+    setAiResult(res.result);
+    saveJSON(STORAGE_KEYS.program, { ...data, score: res.result?.score ?? result?.score, result, aiResult: res.result });
+    if (user) {
+      await supabase.from("program_match_scans").insert({
+        user_id: user.id, input: data as any, result: res.result as any, score: res.result?.score ?? null, risk: res.result?.risk ?? null,
+      });
+    } else {
+      toast.info("Sign in to save your AI result.");
+    }
+    toast.success("AI review complete");
+  };
+
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-semibold">Program Match Scan</h1>
+        <p className="text-sm text-muted-foreground">Check whether your target country, program, and background align.</p>
+      </header>
+      <DisclaimerBanner compact />
+      <form
+        className="rounded-xl border bg-card p-5 grid sm:grid-cols-2 gap-4"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (refusalRequiredMissing) { toast.error("Please complete the prior refusal details below."); return; }
+          const r = scoreProgram(data);
+          setResult(r);
+          saveJSON(STORAGE_KEYS.program, { ...data, score: r.score, result: r });
+          if (user) {
+            const { error } = await supabase.from("program_match_scans").insert({
+              user_id: user.id, input: data as any, result: r as any, score: r.score, risk: r.risk,
+            });
+            if (error) console.error(error);
+          }
+          toast.success(`Program match score: ${r.score}/100`);
+        }}
+      >
+        <Field label="Full name"><Input value={data.fullName ?? ""} onChange={(e) => set("fullName", e.target.value)} /></Field>
+        <Field label="Country of origin"><Input value={data.originCountry ?? ""} onChange={(e) => set("originCountry", e.target.value)} /></Field>
+        <Field label="Education level">
+          <SimpleSelect value={data.educationLevel ?? ""} onChange={(v) => set("educationLevel", v)} options={["High school","Bachelor","Master","PhD"]} />
+        </Field>
+        <Field label="Field of study"><Input value={data.fieldOfStudy ?? ""} onChange={(e) => set("fieldOfStudy", e.target.value)} /></Field>
+        <Field label="Target country"><Input value={data.targetCountry ?? ""} onChange={(e) => set("targetCountry", e.target.value)} /></Field>
+        <Field label="Preferred program"><Input value={data.preferredProgram ?? ""} onChange={(e) => set("preferredProgram", e.target.value)} /></Field>
+        <Field label="Preferred degree level">
+          <SimpleSelect value={data.degreeLevel ?? ""} onChange={(v) => set("degreeLevel", v)} options={["Bachelor","Master","PhD"]} />
+        </Field>
+        <Field label="GPA / average"><Input value={data.gpa ?? ""} onChange={(e) => set("gpa", e.target.value)} /></Field>
+        <Field label="English level">
+          <SimpleSelect value={data.englishLevel ?? ""} onChange={(v) => set("englishLevel", v)} options={[...ENGLISH_LEVELS]} />
+        </Field>
+        <Field label="Budget range">
+          <SimpleSelect value={data.budget ?? ""} onChange={(v) => set("budget", v)} options={["< 5,000","5,000–10,000","10,000–20,000","20,000+"]} />
+        </Field>
+        <Field label="Scholarship need">
+          <SimpleSelect value={data.scholarship ?? ""} onChange={(v) => set("scholarship", v)} options={["none","preferred","required"]} />
+        </Field>
+        <Field label="Preferred intake">
+          <SimpleSelect value={data.intake ?? ""} onChange={(v) => set("intake", v)} options={["Fall","Spring","Summer"]} />
+        </Field>
+        <Field label="Preferred city type">
+          <SimpleSelect value={data.cityType ?? ""} onChange={(v) => set("cityType", v)} options={["Capital","Big city","Mid-size","Small town"]} />
+        </Field>
+        <Field label="Work preference">
+          <SimpleSelect value={data.workPreference ?? ""} onChange={(v) => set("workPreference", v)} options={["No work","Part-time","Internship","Post-study work"]} />
+        </Field>
+        <Field label="Career goal" full><Textarea value={data.careerGoal ?? ""} onChange={(e) => set("careerGoal", e.target.value)} rows={3} /></Field>
+        <Field label="Available documents (comma separated)" full>
+          <Input value={(data.availableDocuments ?? []).join(", ")} onChange={(e) => set("availableDocuments", e.target.value.split(",").map(s => s.trim()).filter(Boolean))} />
+        </Field>
+        <Field label="Prior visa refusal?">
+          <SimpleSelect value={data.priorRefusal ?? "no"} onChange={(v) => set("priorRefusal", v)} options={["no","yes"]} />
+        </Field>
+        {data.priorRefusal === "yes" && (
+          <div className="sm:col-span-2 rounded-lg border bg-secondary/40 p-4 grid sm:grid-cols-2 gap-3">
+            <p className="sm:col-span-2 text-sm font-medium">Prior refusal details (required)</p>
+            <Field label="Refusal country"><Input value={data.refusalCountry ?? ""} onChange={(e) => set("refusalCountry", e.target.value)} /></Field>
+            <Field label="Refusal date (or approximate month/year)"><Input placeholder="e.g. Mar 2024" value={data.refusalDate ?? ""} onChange={(e) => set("refusalDate", e.target.value)} /></Field>
+            <Field label="Visa type refused"><Input value={data.refusalVisaType ?? ""} onChange={(e) => set("refusalVisaType", e.target.value)} /></Field>
+            <Field label="Main refusal reason"><Input value={data.refusalReason ?? ""} onChange={(e) => set("refusalReason", e.target.value)} /></Field>
+            <Field label="What changed since refusal" full><Textarea rows={3} value={data.refusalChanges ?? ""} onChange={(e) => set("refusalChanges", e.target.value)} /></Field>
+            <Field label="Refusal letter (optional)">
+              <Input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => set("refusalLetterName", e.target.files?.[0]?.name)} />
+            </Field>
+            <Field label="Notes (optional)"><Input value={data.refusalNotes ?? ""} onChange={(e) => set("refusalNotes", e.target.value)} /></Field>
+            {refusalRequiredMissing && <p className="sm:col-span-2 text-xs text-risk">Complete all required refusal fields to run the scan.</p>}
+          </div>
+        )}
+        <Field label="Notes" full><Textarea value={data.notes ?? ""} onChange={(e) => set("notes", e.target.value)} rows={2} /></Field>
+        <div className="sm:col-span-2"><Button type="submit" disabled={refusalRequiredMissing}>Run scan</Button></div>
+      </form>
+
+      {result && (
+        <div className="rounded-xl border bg-card p-5 grid md:grid-cols-[auto_1fr] gap-5 brovi-fade-up">
+          <div className="flex flex-col items-center gap-2">
+            <ScoreRing value={result.score} />
+            <RiskBadge score={result.score} />
+            <Button size="sm" variant="outline" onClick={runAI} disabled={aiBusy} className="mt-2">
+              {aiBusy ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1" />}
+              {aiResult ? "Re-run AI review" : "AI review"}
+            </Button>
+          </div>
+          <div className="space-y-4">
+            <Block title="Strengths" items={result.strengths} tone="success" />
+            <Block title="Weaknesses" items={result.weaknesses} tone="risk" />
+            <Block title="Recommended alternatives" items={result.alternatives} />
+            <Block title="Step-by-step action plan" items={result.actionPlan} numbered />
+            {aiResult && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+                <p className="text-sm font-medium flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> AI-assisted review {aiResult.score != null && <span className="text-muted-foreground">· {aiResult.score}/100</span>}</p>
+                <Block title="AI strengths" items={aiResult.strengths ?? []} tone="success" />
+                <Block title="AI weaknesses" items={aiResult.weaknesses ?? []} tone="risk" />
+                <Block title="AI suggested alternatives" items={aiResult.alternatives ?? []} />
+                <Block title="AI action plan" items={aiResult.actionPlan ?? []} numbered />
+              </div>
+            )}
+            <DisclaimerBanner />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Field({ label, children, full }: { label: string; children: React.ReactNode; full?: boolean }) {
+  return <div className={`space-y-1.5 ${full ? "sm:col-span-2" : ""}`}><Label>{label}</Label>{children}</div>;
+}
+function SimpleSelect({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[] }) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+      <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+    </Select>
+  );
+}
+function Block({ title, items, tone, numbered }: { title: string; items: string[]; tone?: "success" | "risk"; numbered?: boolean }) {
+  if (!items.length) return null;
+  const dot = tone === "risk" ? "bg-risk" : tone === "success" ? "bg-success" : "bg-primary";
+  return (
+    <div>
+      <h3 className="font-medium mb-2">{title}</h3>
+      <ol className="space-y-1 text-sm text-muted-foreground">
+        {items.map((s, i) => (
+          <li key={s + i} className="flex items-start gap-2">
+            {numbered ? <span className="h-5 w-5 rounded-full bg-primary/10 text-primary text-xs grid place-items-center shrink-0">{i + 1}</span> : <span className={`h-1.5 w-1.5 rounded-full mt-2 ${dot}`} />}
+            <span>{s}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { ScoreRing, RiskBadge, ScoreBarChart } from "@/components/Score";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import { loadJSON, saveJSON, STORAGE_KEYS } from "@/lib/storage";
+import { finalReport } from "@/lib/scoring";
+import { toast } from "sonner";
+import { Printer, Copy, Users2, Share2 } from "lucide-react";
+import { useState } from "react";
+
+export const Route = createFileRoute("/app/report")({
+  head: () => ({ meta: [{ title: "Readiness Report — Brovi Scan" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({ sample: typeof s.sample === "string" ? s.sample : undefined }),
+  component: ReportPage,
+});
+
+const SAMPLE = {
+  profile: { fullName: "Aisha Demir", targetCountry: "Italy", program: "MSc Computer Engineering" },
+  program: { score: 82, weaknesses: ["Add a backup university", "Confirm intake deadline"] },
+  document: { score: 71, missing: ["Police clearance"], translation: ["Transcript"] },
+  financial: { score: 74, gap: 1500, missing: ["Sponsor business proof"] },
+  interview: { score: 85, weak: ["Add a clear return plan"] },
+};
+
+function ReportPage() {
+  const { sample } = useSearch({ from: "/app/report" });
+  const useSample = sample === "1";
+
+  const profile = useSample ? SAMPLE.profile : loadJSON<any>(STORAGE_KEYS.profile, {});
+  const program = useSample ? SAMPLE.program : loadJSON<any>(STORAGE_KEYS.program, {});
+  const doc = useSample ? SAMPLE.document : loadJSON<any>(STORAGE_KEYS.document, {});
+  const fin = useSample ? SAMPLE.financial : loadJSON<any>(STORAGE_KEYS.financial, {});
+  const itv = useSample ? SAMPLE.interview : loadJSON<any>(STORAGE_KEYS.interview, {});
+
+  const { overall, risk } = finalReport({ program: program.score, document: doc.score, financial: fin.score, interview: itv.score });
+
+  const actionPlan = [
+    ...(program.result?.actionPlan ?? program.weaknesses ?? []),
+    ...(doc.result?.actionPlan ?? doc.missing ?? []),
+    ...(fin.result?.nextSteps ?? fin.missing ?? []),
+    ...(itv.result?.weak ?? itv.weak ?? []),
+  ].slice(0, 8);
+
+  const [shareLink, setShareLink] = useState<string | null>(null);
+
+  const copy = (text: string) => {
+    navigator.clipboard?.writeText(text).then(() => toast.success("Copied to clipboard")).catch(() => toast.error("Copy failed"));
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 no-print">
+        <div>
+          <h1 className="text-2xl font-semibold">Readiness Report{useSample && <span className="ml-2 text-sm text-muted-foreground">(sample)</span>}</h1>
+          <p className="text-sm text-muted-foreground">Combined view of all scans, weighted 25% each.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => window.print()}><Printer className="h-4 w-4 mr-1" />Print / Save PDF</Button>
+          <Button variant="outline" size="sm" onClick={() => copy(actionPlan.join("\n• "))}><Copy className="h-4 w-4 mr-1" />Copy action plan</Button>
+          <Button variant="outline" size="sm" onClick={() => {
+            const link = `${typeof window !== "undefined" ? window.location.origin : ""}/share/brovi-${Math.random().toString(36).slice(2, 8)}`;
+            setShareLink(link);
+            saveJSON(STORAGE_KEYS.report, { overall, link });
+            copy(link);
+          }}><Share2 className="h-4 w-4 mr-1" />Share link</Button>
+          <Button asChild size="sm"><Link to="/app/consultant"><Users2 className="h-4 w-4 mr-1" />Request BROVI Consultant Review</Link></Button>
+        </div>
+      </div>
+
+      {shareLink && (
+        <div className="rounded-md border bg-secondary/40 p-3 text-sm flex items-center justify-between gap-2 no-print">
+          <span className="truncate">Preview share link: <code className="text-primary">{shareLink}</code></span>
+          <Button size="sm" variant="ghost" onClick={() => copy(shareLink)}>Copy</Button>
+        </div>
+      )}
+
+      <div className="rounded-xl border bg-card p-6 grid md:grid-cols-[auto_1fr] gap-6">
+        <ScoreRing value={overall} />
+        <div className="space-y-2">
+          <div className="text-sm text-muted-foreground">Applicant</div>
+          <div className="font-semibold">{profile.fullName || "—"} {profile.targetCountry && <span className="text-muted-foreground font-normal">→ {profile.targetCountry}</span>}</div>
+          <div className="flex items-center gap-2"><RiskBadge score={overall} /><span className="text-sm text-muted-foreground">{risk}</span></div>
+          <p className="text-sm text-muted-foreground mt-2">Final scores are weighted equally across program, documents, financial, and interview readiness.</p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border bg-card p-5">
+        <h2 className="font-semibold mb-3">Module breakdown</h2>
+        <ScoreBarChart data={[
+          { name: "Program match", score: program.score ?? 0 },
+          { name: "Documents", score: doc.score ?? 0 },
+          { name: "Financial", score: fin.score ?? 0 },
+          { name: "Interview", score: itv.score ?? 0 },
+        ]} />
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        <Analysis title="Program match analysis" score={program.score ?? 0} items={program.result?.weaknesses ?? program.weaknesses ?? []} />
+        <Analysis title="Document readiness analysis" score={doc.score ?? 0} items={[...(doc.result?.missing ?? doc.missing ?? []), ...(doc.result?.translation ?? doc.translation ?? [])]} />
+        <Analysis title="Financial readiness analysis" score={fin.score ?? 0} items={fin.result?.missing ?? fin.missing ?? []} />
+        <Analysis title="Interview readiness analysis" score={itv.score ?? 0} items={itv.result?.weak ?? itv.weak ?? []} />
+      </div>
+
+      <div className="rounded-xl border bg-card p-5">
+        <h2 className="font-semibold mb-3">Recommended action plan</h2>
+        {actionPlan.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Run scans to generate your personalized action plan.</p>
+        ) : (
+          <ol className="space-y-2 text-sm">
+            {actionPlan.map((s, i) => (
+              <li key={s + i} className="flex items-start gap-2"><span className="h-5 w-5 rounded-full bg-primary/10 text-primary text-xs grid place-items-center shrink-0">{i + 1}</span>{s}</li>
+            ))}
+          </ol>
+        )}
+      </div>
+
+      <div className="rounded-xl border bg-card p-5">
+        <h2 className="font-semibold mb-2">Suggested timeline</h2>
+        <ul className="text-sm text-muted-foreground space-y-1">
+          <li><strong className="text-foreground">Week 1–2:</strong> Fix critical missing documents and translations.</li>
+          <li><strong className="text-foreground">Week 3:</strong> Refine financial preparation and source-of-funds note.</li>
+          <li><strong className="text-foreground">Week 4:</strong> Practice 10–15 interview answers in strict mode.</li>
+          <li><strong className="text-foreground">Week 5:</strong> Re-scan and request consultant review.</li>
+        </ul>
+      </div>
+
+      <DisclaimerBanner />
+    </div>
+  );
+}
+
+function Analysis({ title, score, items }: { title: string; score: number; items: string[] }) {
+  return (
+    <div className="rounded-xl border bg-card p-5">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-medium">{title}</h3>
+        <span className="text-sm">{score}/100</span>
+      </div>
+      {items.length ? (
+        <ul className="text-sm text-muted-foreground space-y-1">
+          {items.slice(0, 5).map((s, i) => <li key={s + i} className="flex gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary mt-2" />{s}</li>)}
+        </ul>
+      ) : <p className="text-sm text-muted-foreground">No issues detected for this module.</p>}
+    </div>
+  );
+}import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { clearAllPreviewData, STORAGE_KEYS } from "@/lib/storage";
+import { toast } from "sonner";
+import { signOut, useAuth } from "@/hooks/use-auth";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { TRAVEL_PURPOSES } from "@/lib/options";
+import { ACCENTS, AccentKey, ThemeMode, getStoredAccent, getStoredTheme, setStoredAccent, setStoredTheme } from "@/lib/appearance";
+import { Sun, Moon, Monitor, Bug } from "lucide-react";
+
+export const Route = createFileRoute("/app/settings")({
+  head: () => ({ meta: [{ title: "Settings — Brovi Scan" }] }),
+  component: SettingsPage,
+});
+
+function SettingsPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Account
+  const [profile, setProfile] = useState({ full_name: "", email: "", country_of_origin: "", target_country: "", travel_purpose: "" });
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  // Appearance
+  const [theme, setTheme] = useState<ThemeMode>(getStoredTheme());
+  const [accent, setAccent] = useState<AccentKey>(getStoredAccent());
+
+  // Notifications
+  const [notif, setNotif] = useState({ email_readiness_updates: true, security_alerts: true, consultant_updates: true, task_reminders: true });
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
+      if (!data) return;
+      setProfile({
+        full_name: data.full_name ?? "",
+        email: data.email ?? user.email ?? "",
+        country_of_origin: data.country_of_origin ?? data.origin_country ?? "",
+        target_country: data.target_country ?? "",
+        travel_purpose: data.travel_purpose ?? "",
+      });
+      setNotif({
+        email_readiness_updates: data.email_readiness_updates ?? true,
+        security_alerts: data.security_alerts ?? true,
+        consultant_updates: data.consultant_updates ?? true,
+        task_reminders: true,
+      });
+    });
+  }, [user?.id]);
+
+  const saveProfile = async () => {
+    if (!user) { toast.error("Sign in to save your profile."); return; }
+    setSavingProfile(true);
+    const { error } = await supabase.from("profiles").upsert({ id: user.id, ...profile }, { onConflict: "id" });
+    setSavingProfile(false);
+    if (error) toast.error(error.message); else toast.success("Profile saved");
+  };
+
+  const saveNotifications = async () => {
+    if (!user) { toast.error("Sign in to save preferences."); return; }
+    const { error } = await supabase.from("profiles").update({
+      email_readiness_updates: notif.email_readiness_updates,
+      security_alerts: notif.security_alerts,
+      consultant_updates: notif.consultant_updates,
+    }).eq("id", user.id);
+    if (error) toast.error(error.message); else toast.success("Notification preferences saved");
+  };
+
+  const exportData = () => {
+    const out: Record<string, unknown> = {};
+    Object.entries(STORAGE_KEYS).forEach(([k, key]) => {
+      const raw = localStorage.getItem(key);
+      if (raw) try { out[k] = JSON.parse(raw); } catch { out[k] = raw; }
+    });
+    const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "brovi-local-data.json"; a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Local data exported");
+  };
+
+  const sendResetEmail = async () => {
+    if (!user?.email) { toast.error("No email on file."); return; }
+    const { error } = await supabase.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.origin + "/reset-password" });
+    if (error) toast.error(error.message); else toast.success("Password reset email sent");
+  };
+
+  return (
+    <div className="space-y-6 max-w-3xl">
+      <header>
+        <h1 className="text-2xl font-semibold">Settings</h1>
+        <p className="text-sm text-muted-foreground">
+          {user ? `Signed in as ${user.email}` : "You're browsing as a guest. Sign in to save your settings."}
+        </p>
+      </header>
+
+      <Section title="Account" description="Your personal travel readiness profile.">
+        <div className="grid sm:grid-cols-2 gap-3">
+          <Field label="Full name"><Input value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} /></Field>
+          <Field label="Email"><Input type="email" value={profile.email} disabled /></Field>
+          <Field label="Country of origin"><Input value={profile.country_of_origin} onChange={(e) => setProfile({ ...profile, country_of_origin: e.target.value })} /></Field>
+          <Field label="Target country"><Input value={profile.target_country} onChange={(e) => setProfile({ ...profile, target_country: e.target.value })} /></Field>
+          <Field label="Travel purpose">
+            <Select value={profile.travel_purpose} onValueChange={(v) => setProfile({ ...profile, travel_purpose: v })}>
+              <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+              <SelectContent>{TRAVEL_PURPOSES.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}</SelectContent>
+            </Select>
+          </Field>
+        </div>
+        <div className="pt-2">
+          <Button onClick={saveProfile} disabled={savingProfile || !user}>{savingProfile ? "Saving…" : "Save profile"}</Button>
+        </div>
+      </Section>
+
+      <Section title="Appearance" description="Theme and accent color.">
+        <div className="space-y-4">
+          <div>
+            <Label className="text-xs text-muted-foreground">Theme</Label>
+            <div className="mt-2 inline-flex rounded-md border p-0.5 bg-background">
+              {([["system",Monitor,"System"],["light",Sun,"Light"],["dark",Moon,"Dark"]] as const).map(([k, Icon, label]) => (
+                <button key={k} onClick={() => { setTheme(k); setStoredTheme(k); }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm ${theme===k ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                  <Icon className="h-3.5 w-3.5" /> {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">Accent color</Label>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {(Object.keys(ACCENTS) as AccentKey[]).map((k) => (
+                <button key={k} onClick={() => { setAccent(k); setStoredAccent(k); }}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md border text-sm ${accent===k ? "ring-2 ring-primary" : "hover:bg-secondary/60"}`}>
+                  <span className="h-3 w-3 rounded-full border" style={{ background: ACCENTS[k].swatch }} />
+                  {ACCENTS[k].label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Notifications" description="Choose which emails you want to receive.">
+        <div className="space-y-3">
+          {([
+            ["email_readiness_updates","Email readiness updates"],
+            ["security_alerts","Security alerts"],
+            ["consultant_updates","Consultant request updates"],
+            ["task_reminders","Task reminder emails"],
+          ] as const).map(([k, label]) => (
+            <div key={k} className="flex items-center justify-between">
+              <span className="text-sm">{label}</span>
+              <Switch checked={notif[k]} onCheckedChange={(v) => setNotif({ ...notif, [k]: v })} />
+            </div>
+          ))}
+        </div>
+        <div className="pt-2"><Button onClick={saveNotifications} disabled={!user}>Save preferences</Button></div>
+      </Section>
+
+      <Section title="Data controls" description="Your scan results are saved securely when you are signed in.">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={exportData}>Export local data</Button>
+          <Button variant="destructive" onClick={() => { clearAllPreviewData(); toast.success("Local cache cleared"); }}>Clear local cache</Button>
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">To request account deletion, submit a request from Report bug below.</p>
+      </Section>
+
+      <Section title="Security" description="Password and session controls.">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" onClick={sendResetEmail} disabled={!user}>Send password reset link</Button>
+          {user && (
+            <Button variant="outline" onClick={async () => { await signOut(); toast.success("Signed out"); navigate({ to: "/" }); }}>Sign out</Button>
+          )}
+        </div>
+      </Section>
+
+      <Section title="Report bug" description="Tell us what went wrong. Your message goes to the Brovi Scan team.">
+        <ReportBugButton />
+      </Section>
+
+      <Section title="About">
+        <div className="text-sm text-muted-foreground space-y-1">
+          <p><span className="text-foreground font-medium">Brovi Scan</span> — travel readiness preparation platform.</p>
+          <p>Version: Beta</p>
+          <p>Brovi Scan provides preparation guidance only. Final decisions are made by official authorities.</p>
+        </div>
+      </Section>
+    </div>
+  );
+}
+
+function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-xl border bg-card p-5 space-y-4">
+      <div>
+        <h2 className="font-semibold">{title}</h2>
+        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+      </div>
+      {children}
+    </section>
+  );
+}
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{label}</Label>{children}</div>;
+}
+
+function ReportBugButton() {
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async () => {
+    if (!msg.trim()) { toast.error("Please describe what happened."); return; }
+    setBusy(true);
+    const { error } = await supabase.from("bug_reports").insert({
+      user_id: user?.id ?? null,
+      email: user?.email ?? null,
+      message: msg.trim(),
+      page: typeof window !== "undefined" ? window.location.pathname : null,
+      severity: "normal",
+    });
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    setMsg(""); setOpen(false); toast.success("Bug report sent. Thank you!");
+  };
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild><Button variant="outline"><Bug className="h-4 w-4 mr-2" /> Report bug</Button></DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>Report bug</DialogTitle></DialogHeader>
+        <div className="space-y-2">
+          <Label htmlFor="bugmsg">What happened?</Label>
+          <Textarea id="bugmsg" maxLength={2000} rows={6} value={msg} onChange={(e) => setMsg(e.target.value)} placeholder="Describe the steps and what you expected to see…" />
+          <p className="text-xs text-muted-foreground text-right">{msg.length} / 2000</p>
+        </div>
+        <div className="flex justify-end

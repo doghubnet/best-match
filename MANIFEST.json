@@ -1,0 +1,25 @@
+{
+  "source_file": "brovi_lovable_source_extracted.txt",
+  "created_at": "2026-05-27T17:40:12.323906Z",
+  "total_characters": 602224,
+  "total_lines": 11786,
+  "sha256": "b8e93bcba27e530cfe708c47c4bc236469b150d3185695166568df8718a3294e",
+  "chunk_size_characters": 45000,
+  "chunks": [
+    "docs/lovable-source/part-001.txt",
+    "docs/lovable-source/part-002.txt",
+    "docs/lovable-source/part-003.txt",
+    "docs/lovable-source/part-004.txt",
+    "docs/lovable-source/part-005.txt",
+    "docs/lovable-source/part-006.txt",
+    "docs/lovable-source/part-007.txt",
+    "docs/lovable-source/part-008.txt",
+    "docs/lovable-source/part-009.txt",
+    "docs/lovable-source/part-010.txt",
+    "docs/lovable-source/part-011.txt",
+    "docs/lovable-source/part-012.txt",
+    "docs/lovable-source/part-013.txt",
+    "docs/lovable-source/part-014.txt"
+  ],
+  "reassembly_command": "cat docs/lovable-source/part-*.txt > docs/lovable-source-extracted.txt"
+}

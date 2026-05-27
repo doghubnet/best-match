@@ -1,0 +1,817 @@
+nancial, type FinancialInput } from "@/lib/scoring";
+import { useState } from "react";
+import { toast } from "sonner";
+import { ScoreRing, RiskBadge } from "@/components/Score";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import { ShieldAlert } from "lucide-react";
+import { STATEMENT_PERIODS, needsStrongerStatementPeriod } from "@/lib/options";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { invokeAI } from "@/lib/ai";
+import { Sparkles, Loader2 } from "lucide-react";
+
+export const Route = createFileRoute("/app/bank")({
+  head: () => ({ meta: [{ title: "Bank Statement Scan — Brovi Scan" }] }),
+  component: BankPage,
+});
+
+function BankPage() {
+  const initial = loadJSON<FinancialInput & { score?: number; result?: ReturnType<typeof scoreFinancial> }>(STORAGE_KEYS.financial, {} as FinancialInput);
+  const [data, setData] = useState<FinancialInput>(initial);
+  const [result, setResult] = useState(initial.result ?? null);
+  const [aiResult, setAiResult] = useState<any | null>((initial as any).aiResult ?? null);
+  const [aiBusy, setAiBusy] = useState(false);
+  const set = <K extends keyof FinancialInput>(k: K, v: FinancialInput[K]) => setData((d) => ({ ...d, [k]: v }));
+  const num = (v: string) => (v === "" ? undefined : Number(v));
+  const { user } = useAuth();
+  const showPeriodWarning = needsStrongerStatementPeriod(data.statementPeriodLength, data.targetCountry);
+
+  const runAI = async () => {
+    setAiBusy(true);
+    const res = await invokeAI<any>("analyze-bank-statement", { ...data });
+    setAiBusy(false);
+    if (!res.ok) { toast.error(res.message ?? "AI review unavailable."); return; }
+    setAiResult(res.result);
+    if (user) await supabase.from("bank_statement_scans").insert({ user_id: user.id, input: data as any, result: res.result as any, score: res.result?.score ?? null, risk: res.result?.risk ?? null });
+    else toast.info("Sign in to save your AI result.");
+    toast.success("AI review complete");
+  };
+
+  return (
+    <form
+      className="space-y-6"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (!data.statementPeriodLength) { toast.error("Please select a statement period length."); return; }
+        const r = scoreFinancial(data);
+        setResult(r);
+        saveJSON(STORAGE_KEYS.financial, { ...data, score: r.score, result: r });
+        if (user) {
+          const { error } = await supabase.from("bank_statement_scans").insert({
+            user_id: user.id, input: data as any, result: r as any, score: r.score, risk: r.risk,
+          });
+          if (error) console.error(error);
+        }
+        toast.success(`Financial readiness: ${r.score}/100`);
+      }}
+    >
+      <header>
+        <h1 className="text-2xl font-semibold">Bank Statement Scan</h1>
+        <p className="text-sm text-muted-foreground">AI-assisted financial preparation review. Upload only non-sensitive documents.</p>
+      </header>
+      <div className="flex items-start gap-2 rounded-md border border-risk/30 bg-risk/5 p-3 text-sm">
+        <ShieldAlert className="h-4 w-4 text-risk mt-0.5 shrink-0" />
+        <p>Never upload bank passwords, card numbers, CVV, online banking login details, or private access codes.</p>
+      </div>
+
+      <div className="rounded-xl border bg-card p-5 grid sm:grid-cols-2 gap-4">
+        <Field label="Sponsor name"><Input value={data.sponsorName ?? ""} onChange={(e) => set("sponsorName", e.target.value)} /></Field>
+        <Field label="Sponsor relation"><Input value={data.sponsorRelation ?? ""} onChange={(e) => set("sponsorRelation", e.target.value)} /></Field>
+        <Field label="Bank name"><Input value={data.bankName ?? ""} onChange={(e) => set("bankName", e.target.value)} /></Field>
+        <Field label="Statement period (dates)"><Input placeholder="e.g. Jan–Jun 2026" value={data.statementPeriod ?? ""} onChange={(e) => set("statementPeriod", e.target.value)} /></Field>
+        <Field label="Statement period length">
+          <Select value={data.statementPeriodLength ?? ""} onValueChange={(v) => set("statementPeriodLength", v)}>
+            <SelectTrigger><SelectValue placeholder="Select period length..." /></SelectTrigger>
+            <SelectContent>
+              {STATEMENT_PERIODS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </Field>
+        <Field label="Target country"><Input value={data.targetCountry ?? ""} onChange={(e) => set("targetCountry", e.target.value)} placeholder="e.g. Italy" /></Field>
+        {showPeriodWarning && (
+          <div className="sm:col-span-2 flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">
+            <ShieldAlert className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+            <p>Most study visa cases need recent, continuous bank history, commonly 3 to 6 months. Some countries may request more.</p>
+          </div>
+        )}
+        <Field label="Currency"><Input value={data.currency ?? ""} onChange={(e) => set("currency", e.target.value)} placeholder="EUR" /></Field>
+        <Field label="Opening balance"><Input type="number" value={data.openingBalance ?? ""} onChange={(e) => set("openingBalance", num(e.target.value))} /></Field>
+        <Field label="Closing balance"><Input type="number" value={data.closingBalance ?? ""} onChange={(e) => set("closingBalance", num(e.target.value))} /></Field>
+        <Field label="Average balance"><Input type="number" value={data.averageBalance ?? ""} onChange={(e) => set("averageBalance", num(e.target.value))} /></Field>
+        <Field label="Tuition fee amount"><Input type="number" value={data.tuitionFee ?? ""} onChange={(e) => set("tuitionFee", num(e.target.value))} /></Field>
+        <Field label="Living cost amount"><Input type="number" value={data.livingCost ?? ""} onChange={(e) => set("livingCost", num(e.target.value))} /></Field>
+        <Field label="Monthly income estimate"><Input type="number" value={data.monthlyIncome ?? ""} onChange={(e) => set("monthlyIncome", num(e.target.value))} /></Field>
+        <Field label="Monthly expenses estimate"><Input type="number" value={data.monthlyExpenses ?? ""} onChange={(e) => set("monthlyExpenses", num(e.target.value))} /></Field>
+        <Field label="Large deposit notes" full><Textarea rows={2} value={data.largeDepositNotes ?? ""} onChange={(e) => set("largeDepositNotes", e.target.value)} /></Field>
+        <Field label="Source of funds explanation" full><Textarea rows={3} value={data.sourceOfFunds ?? ""} onChange={(e) => set("sourceOfFunds", e.target.value)} /></Field>
+        <Field label="Sponsor job proof status"><YesNoSelect value={data.sponsorJobProof} onChange={(v) => set("sponsorJobProof", v)} /></Field>
+        <Field label="Sponsor business proof status"><YesNoSelect value={data.sponsorBusinessProof} onChange={(v) => set("sponsorBusinessProof", v)} /></Field>
+        <Field label="Accommodation proof"><YesNoSelect value={data.accommodationProof} onChange={(v) => set("accommodationProof", v)} /></Field>
+        <Field label="Family support explanation" full><Textarea rows={2} value={data.familySupport ?? ""} onChange={(e) => set("familySupport", e.target.value)} /></Field>
+        <Field label="Country-specific notes" full><Textarea rows={2} value={data.countryNotes ?? ""} onChange={(e) => set("countryNotes", e.target.value)} /></Field>
+        <div className="sm:col-span-2"><Button type="submit">Run financial scan</Button></div>
+      </div>
+
+      {result && (
+        <div className="rounded-xl border bg-card p-5 grid md:grid-cols-[auto_1fr] gap-5 brovi-fade-up">
+          <div className="flex flex-col items-center gap-2">
+            <ScoreRing value={result.score} />
+            <RiskBadge score={result.score} />
+            <Button type="button" size="sm" variant="outline" onClick={runAI} disabled={aiBusy} className="mt-2">
+              {aiBusy ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1" />}
+              {aiResult ? "Re-run AI review" : "AI review"}
+            </Button>
+          </div>
+          <div className="space-y-3 text-sm">
+            <Row label="Funding gap estimate" value={result.gap ? `${result.gap.toLocaleString()} ${data.currency ?? ""}` : "None"} />
+            <Row label="Balance consistency" value={result.consistency} />
+            <Row label="Large deposit explanation" value={result.depositQuality} />
+            <Row label="Sponsor relationship clarity" value={result.sponsorClarity} />
+            <Row label="Source of funds clarity" value={result.sourceClarity} />
+            {result.missing.length > 0 && (
+              <div>
+                <p className="font-medium">Missing financial evidence</p>
+                <ul className="mt-1 list-disc list-inside text-muted-foreground">{result.missing.map((m) => <li key={m}>{m}</li>)}</ul>
+              </div>
+            )}
+            <div>
+              <p className="font-medium">Safe next steps</p>
+              <ol className="mt-1 space-y-1 text-muted-foreground">
+                {result.nextSteps.map((s, i) => <li key={s} className="flex gap-2"><span className="h-5 w-5 rounded-full bg-primary/10 text-primary text-xs grid place-items-center">{i + 1}</span>{s}</li>)}
+              </ol>
+            </div>
+            <DisclaimerBanner />
+            {aiResult && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-2">
+                <p className="font-medium flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> AI-assisted review {aiResult.score != null && <span className="text-muted-foreground">· {aiResult.score}/100</span>}</p>
+                {aiResult.missing?.length > 0 && <div><p className="font-medium">Missing</p><ul className="list-disc list-inside text-muted-foreground">{aiResult.missing.map((m: string) => <li key={m}>{m}</li>)}</ul></div>}
+                {aiResult.nextSteps?.length > 0 && <div><p className="font-medium">Next steps</p><ol className="list-decimal list-inside text-muted-foreground">{aiResult.nextSteps.map((s: string) => <li key={s}>{s}</li>)}</ol></div>}
+                {aiResult.warnings?.length > 0 && <div><p className="font-medium text-warning">Warnings</p><ul className="list-disc list-inside text-muted-foreground">{aiResult.warnings.map((s: string) => <li key={s}>{s}</li>)}</ul></div>}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </form>
+  );
+}
+
+function Field({ label, children, full }: { label: string; children: React.ReactNode; full?: boolean }) {
+  return <div className={`space-y-1.5 ${full ? "sm:col-span-2" : ""}`}><Label>{label}</Label>{children}</div>;
+}
+function YesNoSelect({ value, onChange }: { value?: string; onChange: (v: string) => void }) {
+  return (
+    <Select value={value ?? ""} onValueChange={onChange}>
+      <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+      <SelectContent>
+        <SelectItem value="available">Available</SelectItem>
+        <SelectItem value="missing">Missing</SelectItem>
+        <SelectItem value="unclear">Unclear</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+function Row({ label, value }: { label: string; value: string }) {
+  return <div className="flex justify-between gap-3 border-b py-1.5 last:border-b-0"><span className="text-muted-foreground">{label}</span><span className="font-medium text-right">{value}</span></div>;
+}import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from "react";
+import { toast } from "sonner";
+import { CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+
+export const Route = createFileRoute("/app/consultant")({
+  head: () => ({ meta: [{ title: "Consultant Review — Brovi Scan" }] }),
+  component: ConsultantPage,
+});
+
+function ConsultantPage() {
+  const [data, setData] = useState<Record<string, string>>({});
+  const [consent, setConsent] = useState(false);
+  const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const { user } = useAuth();
+  const set = (k: string, v: string) => setData((d) => ({ ...d, [k]: v }));
+
+  if (done) {
+    return (
+      <div className="rounded-xl border bg-card p-8 text-center brovi-fade-up">
+        <CheckCircle2 className="h-10 w-10 text-success mx-auto" />
+        <h2 className="text-xl font-semibold mt-3">Request received</h2>
+        <p className="text-sm text-muted-foreground mt-1">Your consultant review request has been saved. A reviewer will reach out using the contact details you provided.</p>
+        <Button className="mt-5" onClick={() => setDone(false)}>Send another</Button>
+      </div>
+    );
+  }
+
+  return (
+    <form
+      className="space-y-6"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (!consent) { toast.error("Please confirm the consent checkbox."); return; }
+        setBusy(true);
+        const { error } = await supabase.from("consultant_requests").insert({
+          user_id: user?.id ?? null,
+          full_name: data.fullName ?? "",
+          email: data.email ?? "",
+          contact: data.contact ?? null,
+          origin_country: data.origin ?? null,
+          target_country: data.target ?? null,
+          visa_type: data.visa ?? null,
+          current_stage: data.stage ?? null,
+          support_type: data.support ?? null,
+          main_concern: data.concern ?? null,
+          consent: true,
+        });
+        setBusy(false);
+        if (error) { toast.error(error.message); return; }
+        toast.success("Request submitted");
+        setDone(true);
+      }}
+    >
+      <header>
+        <h1 className="text-2xl font-semibold">Consultant Review</h1>
+        <p className="text-sm text-muted-foreground">Send your preparation summary to a Brovi consultant for human review.</p>
+      </header>
+      <div className="rounded-xl border bg-card p-5 grid sm:grid-cols-2 gap-4">
+        <Field label="Full name"><Input required value={data.fullName ?? ""} onChange={(e) => set("fullName", e.target.value)} /></Field>
+        <Field label="Email"><Input required type="email" value={data.email ?? ""} onChange={(e) => set("email", e.target.value)} /></Field>
+        <Field label="WhatsApp or Telegram"><Input value={data.contact ?? ""} onChange={(e) => set("contact", e.target.value)} /></Field>
+        <Field label="Country of origin"><Input value={data.origin ?? ""} onChange={(e) => set("origin", e.target.value)} /></Field>
+        <Field label="Target country"><Input value={data.target ?? ""} onChange={(e) => set("target", e.target.value)} /></Field>
+        <Field label="Visa type"><Input value={data.visa ?? ""} onChange={(e) => set("visa", e.target.value)} /></Field>
+        <Field label="Current stage">
+          <SimpleSelect value={data.stage ?? ""} onChange={(v) => set("stage", v)} options={["Exploring","Applied to university","Admission received","Preparing visa","Appointment booked","Refused before"]} />
+        </Field>
+        <Field label="Preferred support type">
+          <SimpleSelect value={data.support ?? ""} onChange={(v) => set("support", v)} options={["Document review","Interview preparation","University selection","Scholarship guidance","Full application guidance","Emergency review"]} />
+        </Field>
+        <Field label="Main concern" full><Textarea rows={3} value={data.concern ?? ""} onChange={(e) => set("concern", e.target.value)} /></Field>
+        <label className="sm:col-span-2 flex items-start gap-2 text-sm">
+          <Checkbox checked={consent} onCheckedChange={(c) => setConsent(!!c)} />
+          <span>I consent to my information being saved for the purpose of a consultant review.</span>
+        </label>
+        <div className="sm:col-span-2"><Button type="submit" disabled={busy}>{busy ? "Sending…" : "Send request"}</Button></div>
+      </div>
+    </form>
+  );
+}
+function Field({ label, children, full }: { label: string; children: React.ReactNode; full?: boolean }) {
+  return <div className={`space-y-1.5 ${full ? "sm:col-span-2" : ""}`}><Label>{label}</Label>{children}</div>;
+}
+function SimpleSelect({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[] }) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+      <SelectContent>{options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
+    </Select>
+  );
+}import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { scoreDocuments } from "@/lib/scoring";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { ScoreRing, RiskBadge } from "@/components/Score";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import { UploadCloud, X, FileText, ShieldAlert, Sparkles, Loader2, Trash2, CheckCircle2 } from "lucide-react";
+import { invokeAI } from "@/lib/ai";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+
+export const Route = createFileRoute("/app/documents")({
+  head: () => ({ meta: [{ title: "Document Scan — Brovi Scan" }] }),
+  component: DocumentsPage,
+});
+
+const ATTACH_STATUSES = ["Available", "Missing", "Needs translation", "Needs legalization", "Needs update", "Not applicable"] as const;
+type AttachStatus = (typeof ATTACH_STATUSES)[number];
+
+const SUGGESTIONS = [
+  "Passport","National ID","Transcript","Degree certificate","School certificate","CV","Motivation letter",
+  "Admission letter","Pre-enrollment confirmation","Tuition fee proof","Scholarship letter",
+  "Sponsor employment proof","Sponsor business proof","Bank statement","Birth certificate","Family certificate",
+  "Police clearance","Accommodation proof","Hotel booking","Flight reservation","Travel insurance",
+  "Business invitation","Conference invitation","Medical appointment letter","Visa application form",
+  "Appointment confirmation","Translation","Legalization","Other document",
+];
+
+type Attachment = {
+  id: string;
+  documentName: string;
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  status: AttachStatus;
+  uploadedAt: string;
+  storagePath?: string;
+  badge: "Attached" | "Saved" | "Local only" | "Failed";
+};
+
+const MAX_PDF = 20 * 1024 * 1024;
+const MAX_IMG = 10 * 1024 * 1024;
+
+function fmtSize(n: number) {
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / 1024 / 1024).toFixed(2)} MB`;
+}
+
+function DocumentsPage() {
+  const { user } = useAuth();
+  const [documentName, setDocumentName] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [destination, setDestination] = useState("");
+  const [purpose, setPurpose] = useState("");
+  const [aiResult, setAiResult] = useState<any | null>(null);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [result, setResult] = useState<ReturnType<typeof scoreDocuments> | null>(null);
+
+  // Load existing attachments for signed-in users
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("uploaded_documents").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (!data) return;
+        setAttachments(data.map((r: any) => ({
+          id: r.id,
+          documentName: r.document_category ?? r.file_name,
+          fileName: r.file_name,
+          fileSize: r.file_size ?? 0,
+          mimeType: r.file_type ?? "",
+          status: (r.scan_status as AttachStatus) ?? "Available",
+          uploadedAt: r.created_at,
+          storagePath: r.storage_path ?? undefined,
+          badge: r.storage_path ? "Saved" : "Local only",
+        })));
+      });
+  }, [user?.id]);
+
+  const filtered = useMemo(() => {
+    if (!documentName) return [] as string[];
+    const q = documentName.toLowerCase();
+    return SUGGESTIONS.filter((s) => s.toLowerCase().includes(q) && s.toLowerCase() !== q).slice(0, 6);
+  }, [documentName]);
+
+  const validate = (f: File): string | null => {
+    const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
+    const isImg = f.type.startsWith("image/");
+    if (isPdf && f.size > MAX_PDF) return "PDF files must be 20MB or smaller.";
+    if (isImg && f.size > MAX_IMG) return "Image files must be 10MB or smaller.";
+    if (!isPdf && !isImg && f.size > MAX_PDF) return "File is too large.";
+    return null;
+  };
+
+  const attach = async () => {
+    if (!documentName.trim()) { toast.error("Please type a document name or type."); return; }
+    if (!file) { toast.error("Please choose a file to attach."); return; }
+    const err = validate(file);
+    if (err) { toast.error(err); return; }
+
+    setBusy(true);
+    const localId = crypto.randomUUID();
+    const now = new Date().toISOString();
+    const base: Attachment = {
+      id: localId, documentName: documentName.trim(), fileName: file.name,
+      fileSize: file.size, mimeType: file.type || "application/octet-stream",
+      status: "Available", uploadedAt: now, badge: user ? "Attached" : "Local only",
+    };
+    setAttachments((p) => [base, ...p]);
+
+    if (user) {
+      try {
+        const safe = file.name.replace(/[^A-Za-z0-9._-]+/g, "_");
+        const path = `${user.id}/general/${Date.now()}-${safe}`;
+        const { error: upErr } = await supabase.storage.from("brovi-documents").upload(path, file, {
+          contentType: file.type || undefined, upsert: false,
+        });
+        if (upErr) throw upErr;
+        const { data: ins, error: insErr } = await supabase.from("uploaded_documents").insert({
+          user_id: user.id,
+          file_name: file.name,
+          file_size: file.size,
+          file_type: file.type,
+          document_category: documentName.trim(),
+          storage_path: path,
+          scan_status: "Available",
+        }).select("id").maybeSingle();
+        if (insErr) throw insErr;
+        setAttachments((p) => p.map((a) => a.id === localId ? { ...a, id: ins?.id ?? a.id, storagePath: path, badge: "Saved" } : a));
+      } catch (e) {
+        console.error(e);
+        setAttachments((p) => p.map((a) => a.id === localId ? { ...a, badge: "Failed" } : a));
+        toast.error("Could not save to private storage. The attachment is kept locally.");
+      }
+    } else {
+      toast.info("Sign in to save documents securely.");
+    }
+    setDocumentName("");
+    setFile(null);
+    setBusy(false);
+  };
+
+  const remove = async (a: Attachment) => {
+    setAttachments((p) => p.filter((x) => x.id !== a.id));
+    if (user && a.storagePath) {
+      try { await supabase.storage.from("brovi-documents").remove([a.storagePath]); } catch { /* ignore */ }
+      try { await supabase.from("uploaded_documents").delete().eq("id", a.id); } catch { /* ignore */ }
+    }
+  };
+
+  const setStatus = async (a: Attachment, s: AttachStatus) => {
+    setAttachments((p) => p.map((x) => x.id === a.id ? { ...x, status: s } : x));
+    if (user && a.storagePath) {
+      await supabase.from("uploaded_documents").update({ scan_status: s }).eq("id", a.id);
+    }
+  };
+
+  const runScan = async () => {
+    const statuses: Record<string, string> = {};
+    attachments.forEach((a) => { statuses[a.documentName] = a.status; });
+    const r = scoreDocuments(statuses as any);
+    setResult(r);
+    toast.success(`Document readiness: ${r.score}/100`);
+  };
+
+  const runAI = async () => {
+    setAiBusy(true);
+    const payload = {
+      destination,
+      travelPurpose: purpose,
+      attachments: attachments.map((a) => ({
+        documentName: a.documentName, fileName: a.fileName, mimeType: a.mimeType,
+        fileSize: a.fileSize, status: a.status, hasStoredFile: !!a.storagePath,
+      })),
+    };
+    const res = await invokeAI<any>("analyze-document-scan", payload);
+    setAiBusy(false);
+    if (!res.ok) { toast.error(res.message ?? "AI review unavailable."); return; }
+    setAiResult(res.result);
+    if (user) await supabase.from("document_scans").insert({
+      user_id: user.id, input: payload as any, result: res.result as any,
+      score: res.result?.score ?? null, risk: res.result?.risk ?? null,
+    });
+    toast.success("AI review complete");
+  };
+
+  const badgeClass = (b: Attachment["badge"]) =>
+    b === "Saved" ? "bg-success/10 text-success border-success/30" :
+    b === "Attached" ? "bg-primary/10 text-primary border-primary/30" :
+    b === "Failed" ? "bg-risk/10 text-risk border-risk/30" :
+    "bg-warning/10 text-warning border-warning/30";
+
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-semibold">Document Scan</h1>
+        <p className="text-sm text-muted-foreground">Attach the documents for your trip or visa application and run an AI-assisted readiness review.</p>
+      </header>
+      <DisclaimerBanner compact />
+      <div className="flex items-start gap-2 rounded-md border border-risk/30 bg-risk/5 p-3 text-sm">
+        <ShieldAlert className="h-4 w-4 text-risk mt-0.5 shrink-0" />
+        <p>Do not upload passwords, OTPs, card numbers, online banking login details, or private access codes.</p>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4 rounded-xl border bg-card p-5">
+        <div className="space-y-1.5">
+          <Label>Destination country</Label>
+          <Input placeholder="e.g. Italy, Canada, UAE" value={destination} onChange={(e) => setDestination(e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label>Travel purpose</Label>
+          <Input placeholder="e.g. Study, Tourism, Business, Family visit" value={purpose} onChange={(e) => setPurpose(e.target.value)} />
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-5">
+        {/* LEFT: upload card */}
+        <section className="rounded-[18px] border bg-[oklch(0.97_0.012_240)] dark:bg-[oklch(0.22_0.04_260)] p-6 shadow-sm space-y-4">
+          <div>
+            <h2 className="font-semibold text-lg">Attach documents</h2>
+            <p className="text-sm text-muted-foreground">Type the document name, choose a file, then attach the document to your readiness file.</p>
+          </div>
+          <div className="space-y-1.5 relative">
+            <Label htmlFor="docname">Document name or type</Label>
+            <Input
+              id="docname"
+              autoComplete="off"
+              value={documentName}
+              onChange={(e) => setDocumentName(e.target.value)}
+              placeholder="Example: passport, admission letter, sponsor letter, hotel booking, business invitation, bank statement…"
+            />
+            <p className="text-xs text-muted-foreground">Type the exact document you are attaching. You may attach any relevant travel document.</p>
+            {filtered.length > 0 && (
+              <ul className="absolute z-10 left-0 right-0 mt-1 rounded-md border bg-popover shadow-md max-h-48 overflow-auto">
+                {filtered.map((s) => (
+                  <li key={s}>
+                    <button type="button" onClick={() => setDocumentName(s)} className="w-full text-left px-3 py-1.5 text-sm hover:bg-secondary">{s}</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <label
+            className="block border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-background/50 transition-colors"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) setFile(f); }}
+          >
+            <UploadCloud className="h-10 w-10 mx-auto text-muted-foreground" />
+            <p className="mt-2 text-sm">{file ? <span className="font-medium">{file.name}</span> : "Drag & drop a file here, or click to select"}</p>
+            {file && <p className="text-xs text-muted-foreground">{fmtSize(file.size)}</p>}
+            <input type="file" className="hidden" accept="application/pdf,image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+          </label>
+          <Button type="button" onClick={attach} disabled={busy} className="w-full">
+            {busy ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <UploadCloud className="h-4 w-4 mr-2" />}
+            Attach document
+          </Button>
+          <p className="text-xs text-muted-foreground">PDF files up to 20MB. Images up to 10MB.</p>
+          <div className="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 p-2 text-xs">
+            <ShieldAlert className="h-3.5 w-3.5 text-warning mt-0.5 shrink-0" />
+            <p>Do not upload passwords, OTPs, card numbers, online banking login details, or private access codes.</p>
+          </div>
+        </section>
+
+        {/* RIGHT: uploaded list */}
+        <section className="rounded-[18px] border bg-card p-6 shadow-sm">
+          <div className="mb-4">
+            <h2 className="font-semibold text-lg">Uploaded documents</h2>
+            <p className="text-sm text-muted-foreground">Review attached documents before running your scan.</p>
+          </div>
+          {attachments.length === 0 ? (
+            <div className="rounded-md border border-dashed p-8 text-center text-sm text-muted-foreground">
+              No documents attached yet. Your attached files will appear here.
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {attachments.map((a) => (
+                <li key={a.id} className="flex items-start gap-3 rounded-lg border p-3">
+                  <div className="h-10 w-10 rounded-md bg-secondary grid place-items-center shrink-0"><FileText className="h-5 w-5 text-muted-foreground" /></div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium truncate">{a.documentName}</p>
+                      <Badge variant="outline" className={badgeClass(a.badge)}>{a.badge}</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{a.fileName} · {fmtSize(a.fileSize)}</p>
+                    <p className="text-xs text-muted-foreground">{new Date(a.uploadedAt).toLocaleString()}</p>
+                  </div>
+                  <button type="button" onClick={() => remove(a)} className="p-2 rounded hover:bg-secondary text-muted-foreground" aria-label="Remove"><Trash2 className="h-4 w-4" /></button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+
+      {attachments.length > 0 && (
+        <section className="rounded-xl border bg-card overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
+            <thead className="bg-secondary/60 text-muted-foreground">
+              <tr>
+                <th className="text-left p-3">Document name</th>
+                <th className="text-left p-3">File name</th>
+                <th className="text-left p-3">Size</th>
+                <th className="text-left p-3">Status</th>
+                <th className="text-left p-3">Uploaded at</th>
+                <th className="text-left p-3">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attachments.map((a) => (
+                <tr key={a.id} className="border-t">
+                  <td className="p-3 font-medium">{a.documentName}</td>
+                  <td className="p-3 text-muted-foreground">{a.fileName}</td>
+                  <td className="p-3 text-muted-foreground">{fmtSize(a.fileSize)}</td>
+                  <td className="p-3">
+                    <Select value={a.status} onValueChange={(v) => setStatus(a, v as AttachStatus)}>
+                      <SelectTrigger className="w-[170px]"><SelectValue /></SelectTrigger>
+                      <SelectContent>{ATTACH_STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </td>
+                  <td className="p-3 text-muted-foreground">{new Date(a.uploadedAt).toLocaleDateString()}</td>
+                  <td className="p-3"><button type="button" onClick={() => remove(a)} className="text-risk text-sm hover:underline inline-flex items-center gap-1"><X className="h-3 w-3" /> Remove</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <Button type="button" onClick={runScan} disabled={attachments.length === 0}>Run document scan</Button>
+        <Button type="button" variant="outline" onClick={runAI} disabled={attachments.length === 0 || aiBusy}>
+          {aiBusy ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Sparkles className="h-4 w-4 mr-1" />}
+          AI review
+        </Button>
+      </div>
+
+      {result && (
+        <div className="rounded-xl border bg-card p-5 grid md:grid-cols-[auto_1fr] gap-5 brovi-fade-up">
+          <div className="flex flex-col items-center gap-2">
+            <ScoreRing value={result.score} />
+            <RiskBadge score={result.score} />
+          </div>
+          <div className="space-y-4">
+            <ListBlock title="Missing documents" items={result.missing} tone="risk" />
+            <ListBlock title="Urgent issues" items={result.urgent} tone="risk" />
+            <ListBlock title="Translation notes" items={result.translation} />
+            <ListBlock title="Legalization notes" items={result.legalization} />
+            <ListBlock title="Step-by-step correction plan" items={result.actionPlan} numbered />
+            {aiResult && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-2 text-sm">
+                <p className="font-medium flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> AI-assisted review {aiResult.score != null && <span className="text-muted-foreground">· {aiResult.score}/100</span>}</p>
+                {(aiResult.missing ?? []).length > 0 && <ListBlock title="AI missing" items={aiResult.missing} tone="risk" />}
+                {(aiResult.urgent ?? []).length > 0 && <ListBlock title="AI urgent" items={aiResult.urgent} tone="risk" />}
+                {(aiResult.actionPlan ?? []).length > 0 && <ListBlock title="AI action plan" items={aiResult.actionPlan} numbered />}
+                {(aiResult.strengths ?? []).length > 0 && <ListBlock title="Strengths" items={aiResult.strengths} />}
+                <p className="text-xs text-muted-foreground flex items-start gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 mt-0.5 text-success shrink-0" /> Some file content could not be fully read. The review used your document names, statuses, destination, travel purpose, and available extracted text.</p>
+              </div>
+            )}
+            <DisclaimerBanner />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ListBlock({ title, items, tone, numbered }: { title: string; items: string[]; tone?: "risk"; numbered?: boolean }) {
+  if (!items || !items.length) return null;
+  return (
+    <div>
+      <h3 className="font-medium mb-2">{title}</h3>
+      <ol className="space-y-1 text-sm text-muted-foreground">
+        {items.map((s, i) => (
+          <li key={s + i} className="flex items-start gap-2">
+            {numbered ? <span className="h-5 w-5 rounded-full bg-primary/10 text-primary text-xs grid place-items-center shrink-0">{i + 1}</span> : <span className={`h-1.5 w-1.5 rounded-full mt-2 ${tone === "risk" ? "bg-risk" : "bg-primary"}`} />}
+            <span>{s}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}import { createFileRoute, Link } from "@tanstack/react-router";
+import { ScoreCard, ScoreRing } from "@/components/Score";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
+import { Button } from "@/components/ui/button";
+import { loadJSON, STORAGE_KEYS } from "@/lib/storage";
+import { finalReport } from "@/lib/scoring";
+import { CheckCircle2, Circle, ArrowRight, GraduationCap, FileCheck2, Wallet, MessageSquareQuote, CalendarClock, BarChart3 } from "lucide-react";
+import { useMemo, useState } from "react";
+
+export const Route = createFileRoute("/app/")({
+  head: () => ({ meta: [{ title: "Dashboard — Brovi Scan" }] }),
+  component: Dashboard,
+});
+
+function Dashboard() {
+  const profile = loadJSON<{ fullName?: string }>(STORAGE_KEYS.profile, {});
+  const program = loadJSON<{ score?: number }>(STORAGE_KEYS.program, {});
+  const doc = loadJSON<{ score?: number }>(STORAGE_KEYS.document, {});
+  const fin = loadJSON<{ score?: number }>(STORAGE_KEYS.financial, {});
+  const itv = loadJSON<{ score?: number }>(STORAGE_KEYS.interview, {});
+  const any = program.score || doc.score || fin.score || itv.score;
+  const { overall, risk } = finalReport({ program: program.score, document: doc.score, financial: fin.score, interview: itv.score });
+
+  const checklist = [
+    { ok: !!profile.fullName, label: "Complete profile", to: "/app/profile" },
+    { ok: !!program.score, label: "Run program match scan", to: "/app/program-match" },
+    { ok: !!doc.score, label: "Complete document checklist", to: "/app/documents" },
+    { ok: !!fin.score, label: "Complete financial readiness scan", to: "/app/bank" },
+    { ok: !!itv.score, label: "Practice interview", to: "/app/interview" },
+    { ok: !!any, label: "Generate final report", to: "/app/report" },
+  ];
+  const nextAction = checklist.find((c) => !c.ok);
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-2xl border bg-card p-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="text-sm text-muted-foreground">Welcome{profile.fullName ? `, ${profile.fullName}` : ""}</p>
+          <h1 className="text-2xl font-semibold">Your travel readiness</h1>
+          <p className="text-sm text-muted-foreground mt-1">Review documents, finances, interview answers, and overall readiness for any trip — study, tourism, business, family, work, conference, medical, or scholarship.</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <ScoreRing value={overall} />
+          <div>
+            <p className="text-sm text-muted-foreground">Overall</p>
+            <p className="text-lg font-semibold">{risk}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <Link to="/app/program-match"><ScoreCard title="Program match" score={program.score ?? 0} icon={<GraduationCap className="h-4 w-4" />} /></Link>
+        <Link to="/app/documents"><ScoreCard title="Documents" score={doc.score ?? 0} icon={<FileCheck2 className="h-4 w-4" />} /></Link>
+        <Link to="/app/bank"><ScoreCard title="Financial" score={fin.score ?? 0} icon={<Wallet className="h-4 w-4" />} /></Link>
+        <Link to="/app/interview"><ScoreCard title="Interview" score={itv.score ?? 0} icon={<MessageSquareQuote className="h-4 w-4" />} /></Link>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4">
+        <ProgressAnalytics scores={{ program: program.score ?? 0, document: doc.score ?? 0, financial: fin.score ?? 0, interview: itv.score ?? 0 }} />
+        <PlanTasksCard />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-4">
+        <div className="rounded-xl border bg-card p-5">
+          <h2 className="font-semibold mb-3">{any ? "Missing actions" : "Onboarding checklist"}</h2>
+          <ul className="space-y-2">
+            {checklist.map((c) => (
+              <li key={c.label}>
+                <Link to={c.to} className="flex items-center justify-between gap-2 p-2 rounded-md hover:bg-secondary/60">
+                  <span className="flex items-center gap-2 text-sm">
+                    {c.ok ? <CheckCircle2 className="h-4 w-4 text-success" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
+                    {c.label}
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="rounded-xl border bg-card p-5 flex flex-col">
+          <h2 className="font-semibold">Recommended next action</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {nextAction ? nextAction.label : "Re-scan to keep your readiness fresh."}
+          </p>
+          <div className="mt-auto pt-4">
+            <Button asChild><Link to={nextAction?.to ?? "/app/report"}>Continue <ArrowRight className="h-4 w-4 ml-1" /></Link></Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-xl border bg-card p-5">
+        <h2 className="font-semibold mb-3">Recent scans</h2>
+        {any ? (
+          <div className="grid sm:grid-cols-2 gap-3 text-sm">
+            {program.score ? <Item label="Program Match" score={program.score} to="/app/program-match" /> : null}
+            {doc.score ? <Item label="Documents" score={doc.score} to="/app/documents" /> : null}
+            {fin.score ? <Item label="Financial" score={fin.score} to="/app/bank" /> : null}
+            {itv.score ? <Item label="Interview" score={itv.score} to="/app/interview" /> : null}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">No scans yet. Start with the program match scan.</p>
+        )}
+      </div>
+
+      <DisclaimerBanner />
+    </div>
+  );
+}
+
+function Item({ label, score, to }: { label: string; score: number; to: string }) {
+  return (
+    <Link to={to} className="flex items-center justify-between rounded-md border p-3 hover:bg-secondary/60">
+      <span>{label}</span>
+      <span className="font-medium">{score}/100</span>
+    </Link>
+  );
+}
+
+function PlanTasksCard() {
+  return (
+    <div className="rounded-xl border bg-card p-5 flex flex-col">
+      <div className="flex items-center gap-2 text-primary">
+        <CalendarClock className="h-4 w-4" />
+        <h2 className="font-semibold text-foreground">Plan your tasks</h2>
+      </div>
+      <p className="text-sm text-muted-foreground mt-1">
+        Create reminders for appointments, document preparation, applications, and travel steps.
+      </p>
+      <div className="mt-auto pt-4">
+        <Button asChild><Link to="/app/tasks">Plan your task <ArrowRight className="h-4 w-4 ml-1" /></Link></Button>
+      </div>
+    </div>
+  );
+}
+
+type Range = "Daily" | "Weekly" | "Monthly" | "Yearly";
+function ProgressAnalytics({ scores }: { scores: { program: number; document: number; financial: number; interview: number } }) {
+  const [range, setRange] = useState<Range>("Weekly");
+  const factor = useMemo(() => ({ Daily: 0.5, Weekly: 1, Monthly: 1.1, Yearly: 1.2 }[range]), [range]);
+  const bars = [
+    { label: "Program", value: Math.min(100, Math.round(scores.program * factor)) },
+    { label: "Documents", value: Math.min(100, Math.round(scores.document * factor)) },
+    { label: "Financial", value: Math.min(100, Math.round(scores.financial * factor)) },
+    { label: "Interview", value: Math.min(100, Math.round(scores.interview * factor)) },
+  ];
+  return (
+    <div className="rounded-xl border bg-card p-5 lg:col-span-2">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="h-4 w-4 text-primary" />
+          <h2 className="font-semibold">Progress analytics</h2>
+        </div>
+        <div className="inline-flex rounded-md border p-0.5 bg-background text-xs">
+          {(["Daily","Weekly","Monthly","Yearly"] as Range[]).map((r) => (
+            <button key={r} onClick={() => setRange(r)}
+              className={`px-2.5 py-1 rounded ${range===r ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"}`}>{r}</button>
+          ))}
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground mt-1">Track your preparation progress across modules.</p>
+      <div className="mt-4 space-y-3">
+        {bars.map((b) => (
+          <div key={b.label}>
+            <div className="flex justify-between text-xs mb-1"><span className="text-muted-foreground">{b

@@ -1,0 +1,1140 @@
+path: '/bank',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
+  '/app/admin': typeof AppAdminRoute
+  '/app/bank': typeof AppBankRoute
+  '/app/consultant': typeof AppConsultantRoute
+  '/app/documents': typeof AppDocumentsRoute
+  '/app/interview': typeof AppInterviewRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/program-match': typeof AppProgramMatchRoute
+  '/app/report': typeof AppReportRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/tasks': typeof AppTasksRoute
+  '/app/': typeof AppIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
+  '/app/admin': typeof AppAdminRoute
+  '/app/bank': typeof AppBankRoute
+  '/app/consultant': typeof AppConsultantRoute
+  '/app/documents': typeof AppDocumentsRoute
+  '/app/interview': typeof AppInterviewRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/program-match': typeof AppProgramMatchRoute
+  '/app/report': typeof AppReportRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/tasks': typeof AppTasksRoute
+  '/app': typeof AppIndexRoute
+}
+export interface FileRoutesById {
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/terms': typeof TermsRoute
+  '/app/admin': typeof AppAdminRoute
+  '/app/bank': typeof AppBankRoute
+  '/app/consultant': typeof AppConsultantRoute
+  '/app/documents': typeof AppDocumentsRoute
+  '/app/interview': typeof AppInterviewRoute
+  '/app/profile': typeof AppProfileRoute
+  '/app/program-match': typeof AppProgramMatchRoute
+  '/app/report': typeof AppReportRoute
+  '/app/settings': typeof AppSettingsRoute
+  '/app/tasks': typeof AppTasksRoute
+  '/app/': typeof AppIndexRoute
+}
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/forgot-password'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/register'
+    | '/reset-password'
+    | '/terms'
+    | '/app/admin'
+    | '/app/bank'
+    | '/app/consultant'
+    | '/app/documents'
+    | '/app/interview'
+    | '/app/profile'
+    | '/app/program-match'
+    | '/app/report'
+    | '/app/settings'
+    | '/app/tasks'
+    | '/app/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/register'
+    | '/reset-password'
+    | '/terms'
+    | '/app/admin'
+    | '/app/bank'
+    | '/app/consultant'
+    | '/app/documents'
+    | '/app/interview'
+    | '/app/profile'
+    | '/app/program-match'
+    | '/app/report'
+    | '/app/settings'
+    | '/app/tasks'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/forgot-password'
+    | '/login'
+    | '/pricing'
+    | '/privacy'
+    | '/register'
+    | '/reset-password'
+    | '/terms'
+    | '/app/admin'
+    | '/app/bank'
+    | '/app/consultant'
+    | '/app/documents'
+    | '/app/interview'
+    | '/app/profile'
+    | '/app/program-match'
+    | '/app/report'
+    | '/app/settings'
+    | '/app/tasks'
+    | '/app/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  TermsRoute: typeof TermsRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/tasks': {
+      id: '/app/tasks'
+      path: '/tasks'
+      fullPath: '/app/tasks'
+      preLoaderRoute: typeof AppTasksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/report': {
+      id: '/app/report'
+      path: '/report'
+      fullPath: '/app/report'
+      preLoaderRoute: typeof AppReportRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/program-match': {
+      id: '/app/program-match'
+      path: '/program-match'
+      fullPath: '/app/program-match'
+      preLoaderRoute: typeof AppProgramMatchRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/interview': {
+      id: '/app/interview'
+      path: '/interview'
+      fullPath: '/app/interview'
+      preLoaderRoute: typeof AppInterviewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/documents': {
+      id: '/app/documents'
+      path: '/documents'
+      fullPath: '/app/documents'
+      preLoaderRoute: typeof AppDocumentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/consultant': {
+      id: '/app/consultant'
+      path: '/consultant'
+      fullPath: '/app/consultant'
+      preLoaderRoute: typeof AppConsultantRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/bank': {
+      id: '/app/bank'
+      path: '/bank'
+      fullPath: '/app/bank'
+      preLoaderRoute: typeof AppBankRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/admin': {
+      id: '/app/admin'
+      path: '/admin'
+      fullPath: '/app/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
+  }
+}
+
+interface AppRouteChildren {
+  AppAdminRoute: typeof AppAdminRoute
+  AppBankRoute: typeof AppBankRoute
+  AppConsultantRoute: typeof AppConsultantRoute
+  AppDocumentsRoute: typeof AppDocumentsRoute
+  AppInterviewRoute: typeof AppInterviewRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppProgramMatchRoute: typeof AppProgramMatchRoute
+  AppReportRoute: typeof AppReportRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppTasksRoute: typeof AppTasksRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAdminRoute: AppAdminRoute,
+  AppBankRoute: AppBankRoute,
+  AppConsultantRoute: AppConsultantRoute,
+  AppDocumentsRoute: AppDocumentsRoute,
+  AppInterviewRoute: AppInterviewRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppProgramMatchRoute: AppProgramMatchRoute,
+  AppReportRoute: AppReportRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppTasksRoute: AppTasksRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  TermsRoute: TermsRoute,
+}
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()import "./lib/error-capture";
+
+import { consumeLastCapturedError } from "./lib/error-capture";
+import { renderErrorPage } from "./lib/error-page";
+
+type ServerEntry = {
+  fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
+};
+
+let serverEntryPromise: Promise<ServerEntry> | undefined;
+
+async function getServerEntry(): Promise<ServerEntry> {
+  if (!serverEntryPromise) {
+    serverEntryPromise = import("@tanstack/react-start/server-entry").then(
+      (m) => ((m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry)),
+    );
+  }
+  return serverEntryPromise;
+}
+
+function brandedErrorResponse(): Response {
+  return new Response(renderErrorPage(), {
+    status: 500,
+    headers: { "content-type": "text/html; charset=utf-8" },
+  });
+}
+
+function isCatastrophicSsrErrorBody(body: string, responseStatus: number): boolean {
+  let payload: unknown;
+  try {
+    payload = JSON.parse(body);
+  } catch {
+    return false;
+  }
+
+  if (!payload || Array.isArray(payload) || typeof payload !== "object") {
+    return false;
+  }
+
+  const fields = payload as Record<string, unknown>;
+  const expectedKeys = new Set(["message", "status", "unhandled"]);
+  if (!Object.keys(fields).every((key) => expectedKeys.has(key))) {
+    return false;
+  }
+
+  return (
+    fields.unhandled === true &&
+    fields.message === "HTTPError" &&
+    (fields.status === undefined || fields.status === responseStatus)
+  );
+}
+
+// h3 swallows in-handler throws into a normal 500 Response with body
+// {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
+async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
+  if (response.status < 500) return response;
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) return response;
+
+  const body = await response.clone().text();
+  if (!isCatastrophicSsrErrorBody(body, response.status)) {
+    return response;
+  }
+
+  console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
+  return brandedErrorResponse();
+}
+
+export default {
+  async fetch(request: Request, env: unknown, ctx: unknown) {
+    try {
+      const handler = await getServerEntry();
+      const response = await handler.fetch(request, env, ctx);
+      return await normalizeCatastrophicSsrResponse(response);
+    } catch (error) {
+      console.error(error);
+      return brandedErrorResponse();
+    }
+  },
+};import { createStart, createMiddleware } from "@tanstack/react-start";
+
+import { renderErrorPage } from "./lib/error-page";
+
+const errorMiddleware = createMiddleware().server(async ({ next }) => {
+  try {
+    return await next();
+  } catch (error) {
+    if (error != null && typeof error === "object" && "statusCode" in error) {
+      throw error;
+    }
+    console.error(error);
+    return new Response(renderErrorPage(), {
+      status: 500,
+      headers: { "content-type": "text/html; charset=utf-8" },
+    });
+  }
+});
+
+export const startInstance = createStart(() => ({
+  requestMiddleware: [errorMiddleware],
+}));@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* Brovi Scan brand
+   * Navy #08111F, Royal blue #2563EB, Cyan #06B6D4
+   * Soft bg #F8FAFC, Slate text #334155
+   * Success #16A34A, Warning #F59E0B, Risk #DC2626 */
+  --background: oklch(0.984 0.005 247);            /* #F8FAFC */
+  --foreground: oklch(0.205 0.04 260);             /* navy-ish slate */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0.04 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.04 260);
+  --primary: oklch(0.547 0.214 264);               /* royal blue #2563EB */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.965 0.012 247);
+  --secondary-foreground: oklch(0.205 0.04 260);
+  --muted: oklch(0.965 0.012 247);
+  --muted-foreground: oklch(0.5 0.03 256);          /* slate #64748B */
+  --accent: oklch(0.78 0.13 210);                  /* cyan accent */
+  --accent-foreground: oklch(0.15 0.03 260);
+  --destructive: oklch(0.58 0.22 27);              /* risk red */
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.92 0.013 255);
+  --input: oklch(0.92 0.013 255);
+  --ring: oklch(0.547 0.214 264);
+  --navy: oklch(0.18 0.035 260);                   /* #08111F */
+  --cyan: oklch(0.74 0.13 210);                    /* #06B6D4 */
+  --success: oklch(0.62 0.18 145);                 /* #16A34A */
+  --warning: oklch(0.78 0.16 75);                  /* #F59E0B */
+  --risk: oklch(0.58 0.22 27);                     /* #DC2626 */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.99 0.003 247);
+  --sidebar-foreground: oklch(0.205 0.04 260);
+  --sidebar-primary: oklch(0.547 0.214 264);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.96 0.012 247);
+  --sidebar-accent-foreground: oklch(0.205 0.04 260);
+  --sidebar-border: oklch(0.92 0.013 255);
+  --sidebar-ring: oklch(0.547 0.214 264);
+}
+
+.dark {
+  --background: oklch(0.16 0.03 260);              /* navy */
+  --foreground: oklch(0.97 0.005 247);
+  --card: oklch(0.21 0.035 260);
+  --card-foreground: oklch(0.97 0.005 247);
+  --popover: oklch(0.21 0.035 260);
+  --popover-foreground: oklch(0.97 0.005 247);
+  --primary: oklch(0.62 0.2 260);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.27 0.04 260);
+  --secondary-foreground: oklch(0.97 0.005 247);
+  --muted: oklch(0.27 0.04 260);
+  --muted-foreground: oklch(0.72 0.03 256);
+  --accent: oklch(0.6 0.13 210);
+  --accent-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.65 0.22 27);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.62 0.2 260);
+  --navy: oklch(0.13 0.03 260);
+  --cyan: oklch(0.74 0.13 210);
+  --success: oklch(0.7 0.18 145);
+  --warning: oklch(0.8 0.16 75);
+  --risk: oklch(0.68 0.22 27);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.18 0.03 260);
+  --sidebar-foreground: oklch(0.97 0.005 247);
+  --sidebar-primary: oklch(0.62 0.2 260);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.27 0.04 260);
+  --sidebar-accent-foreground: oklch(0.97 0.005 247);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.62 0.2 260);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "ss01", "cv01";
+  }
+}
+
+@theme inline {
+  --color-navy: var(--navy);
+  --color-cyan-brand: var(--cyan);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-risk: var(--risk);
+}
+
+@keyframes brovi-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.brovi-fade-up { animation: brovi-fade-up 0.5s ease-out both; }
+.brovi-gradient {
+  background: linear-gradient(135deg, var(--navy), oklch(0.3 0.08 260) 60%, var(--cyan));
+}
+@media print {
+  .no-print { display: none !important; }
+}// Shared AI provider with fallback chain: Lovable AI -> Gemini -> OpenRouter.
+// Never expose API keys to the client. All calls are server-side only.
+
+export const MODELS = {
+  lovable: "google/gemini-2.5-flash",
+  gemini: "gemini-2.5-flash-lite",
+  openrouter: Deno.env.get("OPENROUTER_MODEL") ?? "meta-llama/llama-3.1-8b-instruct:free",
+};
+
+export const DISCLAIMER =
+  "Guidance only. Brovi Scan provides AI-assisted preparation review. Final decisions are made by official institutions.";
+
+type Msg = { role: "system" | "user" | "assistant"; content: string };
+
+export type AIOptions = {
+  messages: Msg[];
+  temperature?: number;
+  json?: boolean;
+};
+
+async function callLovable({ messages, temperature, json }: AIOptions): Promise<string> {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("no_lovable_key");
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model: MODELS.lovable,
+      messages,
+      temperature: temperature ?? 0.3,
+      ...(json ? { response_format: { type: "json_object" } } : {}),
+    }),
+  });
+  if (!res.ok) throw new Error(`lovable_${res.status}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? "";
+}
+
+async function callGemini({ messages, temperature, json }: AIOptions): Promise<string> {
+  const key = Deno.env.get("GEMINI_API_KEY");
+  if (!key) throw new Error("no_gemini_key");
+  const sys = messages.filter((m) => m.role === "system").map((m) => m.content).join("\n");
+  const contents = messages.filter((m) => m.role !== "system").map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+  const body: Record<string, unknown> = {
+    contents,
+    generationConfig: {
+      temperature: temperature ?? 0.3,
+      ...(json ? { responseMimeType: "application/json" } : {}),
+    },
+  };
+  if (sys) body.systemInstruction = { parts: [{ text: sys }] };
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODELS.gemini}:generateContent?key=${key}`,
+    { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
+  );
+  if (!res.ok) throw new Error(`gemini_${res.status}`);
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+}
+
+async function callOpenRouter({ messages, temperature, json }: AIOptions): Promise<string> {
+  const key = Deno.env.get("OPENROUTER_API_KEY");
+  if (!key) throw new Error("no_openrouter_key");
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+      "HTTP-Referer": Deno.env.get("SITE_URL") ?? "https://brovi.app",
+      "X-Title": "Brovi Scan",
+    },
+    body: JSON.stringify({
+      model: MODELS.openrouter,
+      messages,
+      temperature: temperature ?? 0.3,
+      ...(json ? { response_format: { type: "json_object" } } : {}),
+    }),
+  });
+  if (!res.ok) throw new Error(`openrouter_${res.status}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? "";
+}
+
+export async function callAI(opts: AIOptions): Promise<{ content: string; provider: string }> {
+  const errors: string[] = [];
+  for (const [name, fn] of [
+    ["lovable", callLovable] as const,
+    ["gemini", callGemini] as const,
+    ["openrouter", callOpenRouter] as const,
+  ]) {
+    try {
+      const content = await fn(opts);
+      if (content && content.trim()) return { content, provider: name };
+      errors.push(`${name}:empty`);
+    } catch (e) {
+      errors.push(`${name}:${(e as Error).message}`);
+    }
+  }
+  throw new Error(`all_providers_failed: ${errors.join(", ")}`);
+}
+
+export function parseJSON<T = unknown>(text: string): T | null {
+  if (!text) return null;
+  // Strip markdown fences if present
+  const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+  try { return JSON.parse(cleaned) as T; } catch {
+    // Try to extract first {...} block
+    const m = cleaned.match(/\{[\s\S]*\}/);
+    if (m) { try { return JSON.parse(m[0]) as T; } catch { /* ignore */ } }
+    return null;
+  }
+}export const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+export function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}import { callAI, parseJSON, DISCLAIMER } from "../_shared/ai.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  try {
+    const input = await req.json();
+    const system = `You are an expert study visa financial reviewer. Analyze bank statement readiness. Reply ONLY in JSON:
+{"score": 0-100, "risk": "low|medium|high", "gap": number_or_null, "consistency": "good|adequate|weak", "depositQuality": "explained|unexplained|none", "sponsorClarity": "clear|unclear|missing", "sourceClarity": "clear|unclear|missing", "missing": [strings], "nextSteps": [strings], "warnings": [strings]}
+Consider target country requirements, statement period length, declared balance, tuition + living cost vs balance, sponsor relation, source of funds, large deposits, and uploaded document names. NEVER ask for bank passwords, card numbers, CVV, or login credentials.`;
+    const user = `Bank inputs:\n${JSON.stringify(input, null, 2)}`;
+    const { content, provider } = await callAI({
+      messages: [{ role: "system", content: system }, { role: "user", content: user }],
+      json: true,
+    });
+    const parsed = parseJSON<Record<string, unknown>>(content) ?? {};
+    return json({ ok: true, provider, result: { ...parsed, disclaimer: DISCLAIMER } });
+  } catch (e) {
+    return json({ ok: false, error: (e as Error).message, message: "AI review is temporarily unavailable. Your form data was saved, please try again later." }, 503);
+  }
+});import { callAI, parseJSON, DISCLAIMER } from "../_shared/ai.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  try {
+    const input = await req.json();
+    const system = `You are an expert travel-readiness reviewer for visas, tourism, business, study, family visits, work, conferences, medical travel, scholarships, and embassy appointments. Reply ONLY in JSON:
+{"score": 0-100, "risk": "low|medium|high", "missing": [strings], "urgent": [strings], "translation": [strings], "legalization": [strings], "actionPlan": [strings], "strengths": [strings]}
+Use destination country, travel purpose, the user-typed document names, attachment statuses, file metadata, and any extracted text. Never invent official requirements. If files are attached but file content cannot be fully read, still produce a useful review using names/statuses/destination/purpose. Never return 0 when documents are attached. Always close with the standard preparation-only disclaimer.`;
+    const user = `Document inputs:\n${JSON.stringify(input, null, 2)}`;
+    const { content, provider } = await callAI({
+      messages: [{ role: "system", content: system }, { role: "user", content: user }],
+      json: true,
+    });
+    const parsed = parseJSON<Record<string, unknown>>(content) ?? {};
+    return json({ ok: true, provider, result: { ...parsed, disclaimer: DISCLAIMER } });
+  } catch (e) {
+    return json({ ok: false, error: (e as Error).message, message: "AI review is temporarily unavailable. Your form data was saved, please try again later." }, 503);
+  }
+});import { callAI, parseJSON, DISCLAIMER } from "../_shared/ai.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  try {
+    const input = await req.json();
+    const system = `You are an expert visa interview coach. Score the user's answer with strictness matching the mode (Beginner/Normal/Strict). Reply ONLY in JSON:
+{"score": 0-100, "risk": "low|medium|high", "clarity": 0-100, "specificity": 0-100, "consistency": 0-100, "financial": 0-100, "returnPlan": 0-100, "strong": [strings], "weak": [strings], "betterStructure": string, "nextQuestions": [strings]}
+Encourage truthful answers; never invent personal facts. Highlight return-home plan when relevant.`;
+    const user = `Interview input:\n${JSON.stringify(input, null, 2)}`;
+    const { content, provider } = await callAI({
+      messages: [{ role: "system", content: system }, { role: "user", content: user }],
+      json: true,
+    });
+    const parsed = parseJSON<Record<string, unknown>>(content) ?? {};
+    return json({ ok: true, provider, result: { ...parsed, disclaimer: DISCLAIMER } });
+  } catch (e) {
+    return json({ ok: false, error: (e as Error).message, message: "AI review is temporarily unavailable. Your form data was saved, please try again later." }, 503);
+  }
+});import { callAI, parseJSON, DISCLAIMER } from "../_shared/ai.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  try {
+    const input = await req.json();
+    const system = `You are an expert international student visa advisor. Analyze program match readiness based on user inputs. Reply ONLY in JSON with this shape:
+{"score": 0-100, "risk": "low|medium|high", "strengths": [strings], "weaknesses": [strings], "alternatives": [strings], "missing": [strings], "actionPlan": [strings]}
+Consider target country, degree level, English level, budget, scholarship need, city preference, work preference, career goal, available documents, and any prior visa refusal details. Be specific and constructive.`;
+    const user = `User profile:\n${JSON.stringify(input, null, 2)}`;
+    const { content, provider } = await callAI({
+      messages: [{ role: "system", content: system }, { role: "user", content: user }],
+      json: true,
+    });
+    const parsed = parseJSON<Record<string, unknown>>(content) ?? {};
+    return json({ ok: true, provider, result: { ...parsed, disclaimer: DISCLAIMER } });
+  } catch (e) {
+    return json({ ok: false, error: (e as Error).message, message: "AI review is temporarily unavailable. Your form data was saved, please try again later." }, 503);
+  }
+});import { callAI, DISCLAIMER } from "../_shared/ai.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
+
+const SYSTEM = `You are Brovi Assistant, a focused study-visa preparation helper inside the Brovi Scan app.
+ONLY answer questions about: study visa preparation, required documents, program matching, bank/financial readiness, interview practice, readiness reports, and how to use Brovi Scan.
+If asked anything outside this scope (politics, medical, legal advice, unrelated topics), politely decline and steer back.
+Be concise, supportive, and practical. Use markdown. Always remind the user: ${DISCLAIMER}`;
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  try {
+    const { messages = [] } = await req.json();
+    const safe = Array.isArray(messages) ? messages.slice(-20).filter((m) => m && typeof m.content === "string" && (m.role === "user" || m.role === "assistant")) : [];
+    const { content, provider } = await callAI({
+      messages: [{ role: "system", content: SYSTEM }, ...safe],
+      temperature: 0.5,
+    });
+    return json({ ok: true, provider, reply: content });
+  } catch (e) {
+    return json({ ok: false, error: (e as Error).message, reply: "AI review is temporarily unavailable. Please try again later." }, 503);
+  }
+});import { callAI, parseJSON, DISCLAIMER } from "../_shared/ai.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  try {
+    const input = await req.json();
+    const system = `You are a senior study-visa readiness analyst. Combine four module scans (program match, documents, financial, interview) into a single readiness narrative. Reply ONLY in JSON:
+{"overall": 0-100, "risk": "low|medium|high", "summary": string, "topStrengths": [strings], "topRisks": [strings], "actionPlan": [strings up to 8], "timeline": [{"week": string, "task": string}]}
+Weight modules equally (25% each). Be concrete.`;
+    const user = `Module data:\n${JSON.stringify(input, null, 2)}`;
+    const { content, provider } = await callAI({
+      messages: [{ role: "system", content: system }, { role: "user", content: user }],
+      json: true,
+    });
+    const parsed = parseJSON<Record<string, unknown>>(content) ?? {};
+    return json({ ok: true, provider, result: { ...parsed, disclaimer: DISCLAIMER } });
+  } catch (e) {
+    return json({ ok: false, error: (e as Error).message, message: "AI review is temporarily unavailable. Your form data was saved, please try again later." }, 503);
+  }
+});
+-- Roles enum + table
+create type public.app_role as enum ('admin','moderator','user');
+
+create table public.user_roles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  role public.app_role not null default 'user',
+  created_at timestamptz not null default now(),
+  unique(user_id, role)
+);
+alter table public.user_roles enable row level security;
+
+create or replace function public.has_role(_user_id uuid, _role public.app_role)
+returns boolean language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.user_roles where user_id = _user_id and role = _role)
+$$;
+
+create policy "Users can read own roles" on public.user_roles for select to authenticated using (auth.uid() = user_id);
+create policy "Admins can read all roles" on public.user_roles for select to authenticated using (public.has_role(auth.uid(),'admin'));
+
+-- Profiles
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  full_name text,
+  email text,
+  origin_country text,
+  target_country text,
+  avatar_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+alter table public.profiles enable row level security;
+create policy "Profiles self-select" on public.profiles for select to authenticated using (auth.uid() = id);
+create policy "Profiles self-insert" on public.profiles for insert to authenticated with check (auth.uid() = id);
+create policy "Profiles self-update" on public.profiles for update to authenticated using (auth.uid() = id);
+
+-- Auto-create profile + default role on signup
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.profiles (id, full_name, email)
+  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name'), new.email)
+  on conflict (id) do nothing;
+  insert into public.user_roles (user_id, role) values (new.id, 'user') on conflict do nothing;
+  return new;
+end;
+$$;
+create trigger on_auth_user_created
+  after insert on auth.users for each row execute function public.handle_new_user();
+
+-- Generic updated_at trigger
+create or replace function public.touch_updated_at()
+returns trigger language plpgsql as $$
+begin new.updated_at = now(); return new; end;
+$$;
+create trigger profiles_touch before update on public.profiles for each row execute function public.touch_updated_at();
+
+-- Documents (uploaded file metadata)
+create table public.documents (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  name text not null,
+  doc_type text,
+  storage_path text,
+  size_bytes bigint,
+  mime_type text,
+  metadata jsonb default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+alter table public.documents enable row level security;
+create policy "documents self-select" on public.documents for select to authenticated using (auth.uid() = user_id);
+create policy "documents self-insert" on public.documents for insert to authenticated with check (auth.uid() = user_id);
+create policy "documents self-update" on public.documents for update to authenticated using (auth.uid() = user_id);
+create policy "documents self-delete" on public.documents for delete to authenticated using (auth.uid() = user_id);
+
+-- Document scans
+create table public.document_scans (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  input jsonb not null default '{}'::jsonb,
+  result jsonb not null default '{}'::jsonb,
+  score int,
+  risk text,
+  created_at timestamptz not null default now()
+);
+alter table public.document_scans enable row level security;
+create policy "doc_scans self-all" on public.document_scans for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Program match scans
+create table public.program_match_scans (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  input jsonb not null default '{}'::jsonb,
+  result jsonb not null default '{}'::jsonb,
+  score int,
+  risk text,
+  created_at timestamptz not null default now()
+);
+alter table public.program_match_scans enable row level security;
+create policy "pm_scans self-all" on public.program_match_scans for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Bank statement scans
+create table public.bank_statement_scans (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  input jsonb not null default '{}'::jsonb,
+  result jsonb not null default '{}'::jsonb,
+  score int,
+  risk text,
+  created_at timestamptz not null default now()
+);
+alter table public.bank_statement_scans enable row level security;
+create policy "bank_scans self-all" on public.bank_statement_scans for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Interview sessions
+create table public.interview_sessions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  input jsonb not null default '{}'::jsonb,
+  result jsonb not null default '{}'::jsonb,
+  score int,
+  risk text,
+  created_at timestamptz not null default now()
+);
+alter table public.interview_sessions enable row level security;
+create policy "itv self-all" on public.interview_sessions for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Readiness reports
+create table public.readiness_reports (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  overall_score int,
+  risk text,
+  payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+alter table public.readiness_reports enable row level security;
+create policy "reports self-all" on public.readiness_reports for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Consultant requests (public can insert with consent)
+create table public.consultant_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  full_name text not null,
+  email text not null,
+  contact text,
+  origin_country text,
+  target_country text,
+  visa_type text,
+  current_stage text,
+  support_type text,
+  main_concern text,
+  consent boolean not null default false,
+  status text not null default 'pending',
+  admin_note text,
+  created_at timestamptz not null default now()
+);
+alter table public.consultant_requests enable row level security;
+create policy "consult public insert with consent" on public.consultant_requests
+  for insert to anon, authenticated with check (consent = true);
+create policy "consult self-select" on public.consultant_requests
+  for select to authenticated using (auth.uid() = user_id);
+create policy "consult admin-select" on public.consultant_requests
+  for select to authenticated using (public.has_role(auth.uid(),'admin'));
+create policy "consult admin-update" on public.consultant_requests
+  for update to authenticated using (public.has_role(auth.uid(),'admin'));
+
+-- Chat sessions / messages
+create table public.chat_sessions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade,
+  title text,
+  created_at timestamptz not null default now()
+);
+alter table public.chat_sessions enable row level security;
+create policy "chat_sessions self-all" on public.chat_sessions for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create table public.chat_messages (
+  id uuid primary key default gen_random_uuid(),
+  session_id uuid not null references public.chat_sessions(id) on delete cascade,
+  user_id uuid references auth.users(id) on delete cascade,
+  role text not null check (role in ('user','assistant','system')),
+  content text not null,
+  created_at timestamptz not null default now()
+);
+alter table public.chat_messages enable row level security;
+create policy "chat_messages self-all" on public.chat_messages for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Audit logs (admin only)
+create table public.audit_logs (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete set null,
+  action text not null,
+  entity text,
+  entity_id text,
+  metadata jsonb default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+alter table public.audit_logs enable row level security;
+create policy "audit admin-select" on public.audit_logs for select to authenticated using (public.has_role(auth.uid(),'admin'));
+create policy "audit self-insert" on public.audit_logs for insert to authenticated with check (auth.uid() = user_id);
+create or replace function public.touch_updated_at()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin new.updated_at = now(); return new; end;
+$$;
+
+revoke execute on function public.has_role(uuid, public.app_role) from public, anon, authenticated;
+revoke execute on function public.touch_updated_at() from public, anon, authenticated;
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+-- Profile column additions
+alter table public.profiles
+  add column if not exists country_of_origin text,
+  add column if not exists target_country text,
+  add column if not exists travel_purpose text,
+  add column if not exists role text default 'user',
+  add column if not exists theme text default 'system',
+  add column if not exists accent_color text default 'default',
+  add column if not exists email_readiness_updates boolean default true,
+  add column if not exists consultant_updates boolean default true,
+  add column if not exists security_alerts boolean default true;
+
+-- is_admin helper (mirrors has_role for profiles.role)
+create or replace function public.is_admin(_user_id uuid)
+returns boolean
+language sql
+stable security definer
+set search_path = public
+as $$
+  select coalesce((select role = 'admin' from public.profiles where id = _user_id), false)
+      or public.has_role(_user_id, 'admin'::app_role)
+$$;
+
+-- bug_reports
+create table if not exists public.bug_reports (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid,
+  page text,
+  severity text,
+  message text not null,
+  email text,
+  status text not null default 'new',
+  created_at timestamptz not null default now()
+);
+alter table public.bug_reports enable row level security;
+drop policy if exists "bugs self-insert" on public.bug_reports;
+create policy "bugs self-insert" on public.bug_reports
+  for insert to anon, authenticated
+  with check (auth.uid() is null or auth.uid() = user_id);
+drop policy if exists "bugs self-select" on public.bug_reports;
+create policy "bugs self-select" on public.bug_reports
+  for select to authenticated using (auth.uid() = user_id);
+drop policy if exists "bugs admin-select" on public.bug_reports;
+create policy "bugs admin-select" on public.bug_reports
+  for select to authenticated using (public.has_role(auth.uid(), 'admin'::app_role));
+drop policy if exists "bugs admin-update" on public.bug_reports;
+create policy "bugs admin-update" on public.bug_reports
+  for update to authenticated using (public.has_role(auth.uid(), 'admin'::app_role));
+
+-- app_settings
+create table if not exists public.app_settings (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null,
+  key text not null,
+  value jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (user_id, key)
+);
+alter table public.app_settings enable row level security;
+drop policy if exists "settings self-all" on public.app_settings;
+create policy "settings self-all" on public.app_settings
+  for all to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
