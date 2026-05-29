@@ -1,2 +1,26 @@
-import { Link } from 'react-router-dom';
-export default function Dashboard(){const usage=[['program_match_scan',1],['document_scan',1],['financial_scan',0],['interview_answer',0],['final_report',0]];return <div className='space-y-5'><h1 className='text-3xl'>Welcome back</h1><div className='grid md:grid-cols-5 gap-3'>{usage.map(([k,v])=><div key={k} className='card'><p className='text-xs'>{k}</p><p className='text-2xl'>{v}/1</p></div>)}</div><div className='card'><p>Shortcuts</p><div className='flex flex-wrap gap-2 mt-2'>{['program-match','documents','bank','interview','report'].map(s=><Link key={s} to={`/app/${s}`} className='btn bg-slate-700'>{s}</Link>)}</div></div><div className='grid md:grid-cols-2 gap-3'><div className='card'><p className='font-semibold'>Recent activity</p><p className='text-slate-300'>No recent finished scans.</p></div><div className='card'><p className='font-semibold'>Next tasks</p><ul className='list-disc pl-5 text-slate-300'><li>Complete program scan</li><li>Upload key document</li><li>Practice 3 questions</li></ul><Link to='/pricing' className='btn mt-3 inline-block'>Upgrade CTA</Link></div></div></div>}
+import { Link } from "react-router-dom";
+import { useAuth } from "@/lib/auth";
+
+const cards = [
+  ["Profile", "/app/profile", "Add education, target country, and sponsor details."],
+  ["Program match", "/app/program-match", "Check how your background fits your intended program."],
+  ["Documents", "/app/documents", "Review required documents and quality gaps."],
+  ["Finance", "/app/bank", "Estimate funding visibility and shortfalls."],
+  ["Interview", "/app/interview", "Practice common questions with feedback."],
+  ["Final report", "/app/report", "Review strengths, risks, and next steps."],
+];
+
+export default function Dashboard() {
+  const { user, demoMode } = useAuth();
+  return (
+    <div className="space-y-8">
+      <section className="rounded-3xl bg-gradient-to-br from-indigo-600/25 to-cyan-500/10 p-6">
+        <p className="text-sm text-indigo-200">{demoMode ? "Demo workspace" : "Student workspace"}</p>
+        <h1 className="mt-2 text-3xl font-bold">Hi {user?.name ?? "there"}, continue your readiness plan.</h1>
+        <p className="mt-2 text-slate-300">Complete each check before you submit applications or travel documentation.</p>
+      </section>
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{cards.map(([title, href, text], index) => <Link key={title} to={href} className="card transition hover:-translate-y-1 hover:border-indigo-400/50"><span className="text-sm text-indigo-300">Step {index + 1}</span><h2 className="mt-2 text-xl font-semibold">{title}</h2><p className="mt-2 text-sm text-slate-300">{text}</p></Link>)}</section>
+      <section className="grid gap-4 lg:grid-cols-2"><div className="card"><h2 className="text-xl font-semibold">Recent activity</h2><p className="mt-3 text-slate-300">No completed scans yet. Start with your profile or program match.</p></div><div className="card"><h2 className="text-xl font-semibold">Next tasks</h2><ul className="mt-3 list-disc space-y-2 pl-5 text-slate-300"><li>Complete your profile</li><li>Run a program match scan</li><li>Upload your first document checklist item</li></ul></div></section>
+    </div>
+  );
+}
